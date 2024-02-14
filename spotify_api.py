@@ -9,12 +9,12 @@ class SpotifyAPI:
         load_dotenv()
 
         # Credenciales de las variables de entorno para utiliar API de Spotify
-        self.CLIENT_ID = os.getenv('CLIENT_ID')
-        self.CLIENT_SECRET = os.getenv('CLIENT_SECRET')
-        self.REDIRECT_URI = os.getenv('REDIRECT_URI')
+        self.SP_CLIENT_ID = os.getenv('SP_CLIENT_ID')
+        self.SP_CLIENT_SECRET = os.getenv('SP_CLIENT_SECRET')
+        self.SP_REDIRECT_URI = os.getenv('SP_REDIRECT_URI')
 
         # Inicializa el objeto SpotifyOAuth
-        self.sp_oauth = SpotifyOAuth(client_id=self.CLIENT_ID, client_secret=self.CLIENT_SECRET, redirect_uri=self.REDIRECT_URI, scope='playlist-read-private')
+        self.sp_oauth = SpotifyOAuth(client_id=self.SP_CLIENT_ID, client_secret=self.SP_CLIENT_SECRET, redirect_uri=self.SP_REDIRECT_URI, scope='playlist-read-private')
 
         # Inicializa el objeto Spotify
         self.sp = spotipy.Spotify(auth_manager=self.sp_oauth)
