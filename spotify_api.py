@@ -14,7 +14,7 @@ class SpotifyAPI:
         self.SP_REDIRECT_URI = os.getenv('SP_REDIRECT_URI')
 
         # Inicializa el objeto SpotifyOAuth
-        self.sp_oauth = SpotifyOAuth(client_id=self.SP_CLIENT_ID, client_secret=self.SP_CLIENT_SECRET, redirect_uri=self.SP_REDIRECT_URI, scope='playlist-read-private')
+        self.sp_oauth = SpotifyOAuth(client_id=self.SP_CLIENT_ID, client_secret=self.SP_CLIENT_SECRET, redirect_uri=self.SP_REDIRECT_URI, scope='user-library-modify user-read-playback-position user-read-currently-playing user-read-recently-played user-top-read')
 
         # Inicializa el objeto Spotify
         self.sp = spotipy.Spotify(auth_manager=self.sp_oauth)
@@ -38,6 +38,36 @@ class SpotifyAPI:
             tracks += playlist["tracks"]["total"]
         print(f'Playlists found: {counter}')
         print(f'Total tracks found:{tracks}')
+
+    def user_info(self):
+        # Obtiene la información del perfil del usuario
+        user_info = self.sp.current_user()
+
+        # Obtiene las canciones más reproducidas
+        top_tracks = self.sp.current_user_top_tracks(limit=10, time_range='short_term')
+
+        # Obtiene los artistas más escuchados
+        top_artists = self.sp.current_user_top_artists(limit=10, time_range='short_term')
+
+        # Obtiene el tiempo total de reproducción
+        playback = self.sp.currently_playing()
+
+        if playback is not None:
+            total_playback_time_ms = playback['progress_ms']
+            total_playback_time_min = total_playback_time_ms / 60000
+
+        # Imprime las estadísticas obtenidas del usuario
+        print((' ' + user_info['display_name'] + ' Spotify account information: ').center(100,'*'))
+        print('Total followers:' + str(user_info['followers']['total']))
+        print("\nTop 10 most recently played songs:")
+        for track in top_tracks['items']:
+            print(track['name'], '-', track['artists'][0]['name'])
+        print("\nTop 10 most recently listened to artists:")
+        for artist in top_artists['items']:
+            print(artist['name'])
+        if playback is not None:
+            print(f"\nTotal playback time: {total_playback_time_min:.2f} minutes")
+
 
     def search_playlist_tracks(self, playlist_name):
         # Busca la playlist por su nombre
