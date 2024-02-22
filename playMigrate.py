@@ -16,8 +16,14 @@ def main():
         elif len(sys.argv) == 4 and sys.argv[1]=='spotify'and sys.argv[3]=='-l':
             spotify_api.search_playlist_tracks(sys.argv[2])
         # Listar todas las playlists del usuario en Youtube
-        if len(sys.argv) == 3 and sys.argv[1]=='youtube' and sys.argv[2]=='-l':
+        elif len(sys.argv) == 3 and sys.argv[1]=='youtube' and sys.argv[2]=='-l':
             youtube_api.list_playlists()
+        # Información del usuario de Spotify
+        elif len(sys.argv) == 3 and sys.argv[1]=='youtube' and sys.argv[2]=='-i':
+            youtube_api.user_info()    
+        # Listas los tracks de una playlist específica en Youtube Music
+        elif len(sys.argv) == 4 and sys.argv[1]=='youtube'and sys.argv[3]=='-l':
+            spotify_api.search_playlist_tracks(sys.argv[2])
     else:
         print('Error con los argumentos')
 

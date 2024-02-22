@@ -25,6 +25,7 @@ class SpotifyAPI:
         # Inicializa el objeto Spotify
         self.sp = spotipy.Spotify(auth_manager=self.sp_oauth)
 
+    # Listar las playlists del usuario en Spotify
     def list_playlists(self):
         # Obtiene las listas de reproducción del usuario
         playlists = self.sp.current_user_playlists()
@@ -39,6 +40,7 @@ class SpotifyAPI:
         print(f'Playlists found: {counter}')
         print(f'Total tracks found:{tracks}')
 
+    # Retorna información del usuario de Spotify
     def user_info(self):
         # Obtiene la información del perfil del usuario
         user_info = self.sp.current_user()
@@ -68,7 +70,7 @@ class SpotifyAPI:
         if playback is not None:
             print(f"\nTotal playback time: {total_playback_time_min:.2f} minutes")
 
-
+    # Lista los tracks de una playlist en particular de Spotify
     def search_playlist_tracks(self, playlist_name):
         # Busca la playlist por su nombre
         res = self.sp.search(q=playlist_name, type='playlist')
