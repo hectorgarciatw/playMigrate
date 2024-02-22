@@ -23,7 +23,10 @@ def main():
             youtube_api.user_info()    
         # Listas los tracks de una playlist específica en Youtube Music
         elif len(sys.argv) == 4 and sys.argv[1]=='youtube'and sys.argv[3]=='-l':
-            spotify_api.search_playlist_tracks(sys.argv[2])
+            youtube_api.search_playlist_tracks(sys.argv[2])
+        # Actualizo las credenciales del usuario de Youtube Music
+        elif len(sys.argv) == 3 and sys.argv[1]=='youtube'and sys.argv[2]=='-u':
+            youtube_api.update_credentials()
     else:
         print('Error con los argumentos')
 

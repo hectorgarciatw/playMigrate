@@ -1,4 +1,4 @@
-import os,pickle
+import os,pickle,json
 from dotenv import load_dotenv
 from google_auth_oauthlib.flow import InstalledAppFlow
 from googleapiclient.discovery import build
@@ -22,6 +22,12 @@ class YoutubeAPI:
         # Guarda las credenciales en un archivo de caché
         with open('credentials.pickle', 'wb') as token:
             pickle.dump(credentials, token)
+
+    # Actualiza las credenciales del usuario
+    def update_credentials(self):
+        # Solicita al usuario que se autorice y actualiza las credenciales almacenadas
+        self.credentials = self.authorize()
+        self.save_credentials(self.credentials)
 
     def authorize(self):
         # Inicia el flujo de autorización de OAuth2
@@ -71,28 +77,58 @@ class YoutubeAPI:
             print('ID de la lista de reproducción:', playlist['id'])
             print()
 
-    # Lista los tracks de una playlist en particular de Youtube Music
-    def search_playlist_tracks(self, id):
+    def get_playlist_id_by_name(self, playlist_name):
         # Obtén el servicio de la API de YouTube
         youtube = self.get_youtube_service()
 
+        # Realiza la solicitud para obtener las listas de reproducción del usuario
+        request = youtube.playlists().list(
+            part='id,snippet',
+            mine=True,
+            maxResults=50  # Ajusta el número de resultados por página según tu necesidad
+        )
+        response = request.execute()
+
+        # Busca la lista de reproducción por su nombre en la respuesta
+        for playlist in response['items']:
+            if playlist['snippet']['title'] == playlist_name:
+                return playlist['id']
+
+        # Si no se encuentra la lista de reproducción, devuelve None
+        return None
+
+    # Lista los tracks de una playlist en particular de Youtube Music
+    def search_playlist_tracks(self, playlist_name):
+        # Obtén el servicio de la API de YouTube
+        youtube = self.get_youtube_service()
+
+        # Obtén el ID de la lista de reproducción
+        playlist_id = self.get_playlist_id_by_name(playlist_name)
+
+        if not playlist_id:
+            print("La lista de reproducción '{}' no fue encontrada.".format(playlist_name))
+            return
+        
         # Realiza la solicitud para obtener los detalles de la playlist
         playlist_response = youtube.playlistItems().list(
             part='snippet',
-            playlistId=id,
+            playlistId=playlist_id,
             maxResults=50  # Puedes ajustar el número de resultados si es necesario
         ).execute()
 
+        print(f'Playlist \"{playlist_name}\" tracks found: \n')
         # Itera sobre los elementos de la playlist e imprime los títulos de los videos
         for item in playlist_response['items']:
-            video_title = item['snippet']['title']
-            print(video_title)
+            audio_title = item['snippet']['title']
+            print(audio_title)
+        print()
+        print(f'Playlist Id: \"{playlist_id}\"')
         
     # Retorna información del usuario de Youtube Music
     def user_info(self):
         # Obtén el servicio de la API de YouTube
         youtube = self.get_youtube_service()
-        
+
         # Obtiene la información del usuario
         user_info_response = youtube.channels().list(part='snippet', mine=True).execute()
         user_info = user_info_response['items'][0]['snippet']
