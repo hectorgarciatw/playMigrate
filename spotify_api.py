@@ -1,4 +1,4 @@
-import os
+import os,pickle
 import spotipy
 from spotipy.oauth2 import SpotifyOAuth
 from dotenv import load_dotenv
@@ -22,11 +22,26 @@ class SpotifyAPI:
     def service_login(self):
         # Obtiene el token de acceso (se conecta vía browser para obtener permisos)
         token_info = self.sp_oauth.get_access_token(as_dict=False)
+        # Serializa las credenciales de Spotipy
+        with open('sp_credentials.pickle', 'wb') as f:
+            pickle.dump(token_info, f)
         # Inicializa el objeto Spotify
         self.sp = spotipy.Spotify(auth_manager=self.sp_oauth)
 
+    def load_credentials(self):
+        # Intenta cargar las credenciales desde un archivo de caché
+        if os.path.exists('sp_credentials.pickle'):
+            with open('sp_credentials.pickle', 'rb') as token:
+                return pickle.load(token)
+        return None
+
     # Listar las playlists del usuario en Spotify
     def list_playlists(self):
+        # En caso de no contar con credenciales dumpeadas las creo
+        if not self.load_credentials():
+            # Realiza el login
+            self.service_login()
+
         # Obtiene las listas de reproducción del usuario
         playlists = self.sp.current_user_playlists()
         #Imprime las listas de reproducción
@@ -42,6 +57,11 @@ class SpotifyAPI:
 
     # Retorna información del usuario de Spotify
     def user_info(self):
+        # En caso de no contar con credenciales dumpeadas las creo
+        if not self.load_credentials():
+            # Realiza el login
+            self.service_login()
+
         # Obtiene la información del perfil del usuario
         user_info = self.sp.current_user()
 
@@ -72,6 +92,11 @@ class SpotifyAPI:
 
     # Lista los tracks de una playlist en particular de Spotify
     def search_playlist_tracks(self, playlist_name):
+        # En caso de no contar con credenciales dumpeadas las creo
+        if not self.load_credentials():
+            # Realiza el login
+            self.service_login()
+            
         # Busca la playlist por su nombre
         res = self.sp.search(q=playlist_name, type='playlist')
         playlist_info = res['playlists']['items']
