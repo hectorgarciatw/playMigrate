@@ -3,48 +3,50 @@ from dotenv import load_dotenv
 from google_auth_oauthlib.flow import InstalledAppFlow
 from googleapiclient.discovery import build
 
+from spotify_api import SpotifyAPI
+
 class YoutubeAPI:
     # Define los alcances de la API de YouTube v3
     SCOPES = ['https://www.googleapis.com/auth/youtube.readonly', 'https://www.googleapis.com/auth/youtube']
 
     def __init__(self):
         # Almacena una referencia a las credenciales autorizadas
-        self.credentials = None
+        self.yt_credentials = None
 
     def load_credentials(self):
         # Intenta cargar las credenciales desde un archivo de caché
-        if os.path.exists('credentials.pickle'):
-            with open('credentials.pickle', 'rb') as token:
-                self.credentials =  pickle.load(token)
+        if os.path.exists('yt_credentials.pickle'):
+            with open('yt_credentials.pickle', 'rb') as token:
+                self.yt_credentials =  pickle.load(token)
         return None
 
-    def save_credentials(self, credentials):
+    def save_credentials(self, yt_credentials):
         # Guarda las credenciales en un archivo de caché
-        with open('credentials.pickle', 'wb') as token:
-            pickle.dump(credentials, token)
+        with open('yt_credentials.pickle', 'wb') as token:
+            pickle.dump(yt_credentials, token)
 
     # Actualiza las credenciales del usuario
     def update_credentials(self):
         # Solicita al usuario que se autorice y actualiza las credenciales almacenadas
-        self.credentials = self.authorize()
-        self.save_credentials(self.credentials)
+        self.yt_credentials = self.authorize()
+        self.save_credentials(self.yt_credentials)
 
     def authorize(self):
         # Inicia el flujo de autorización de OAuth2
         flow = InstalledAppFlow.from_client_secrets_file('./client_secret_249986949363-k8ro9gijcpevkmpap9va4gq7neojcegq.apps.googleusercontent.com.json', self.SCOPES)
-        credentials = flow.run_local_server(port=0)
+        yt_credentials = flow.run_local_server(port=0)
 
         # Guarda las credenciales para futuros usos
-        self.save_credentials(credentials)
-        return credentials
+        self.save_credentials(yt_credentials)
+        return yt_credentials
 
     def build_service(self):
         # Si no hay credenciales almacenadas, solicita al usuario que se autorice
-        if not self.credentials or not self.credentials.valid:
-            self.credentials = self.authorize()
+        if not self.yt_credentials or not self.yt_credentials.valid:
+            self.yt_credentials = self.authorize()
 
         # Construye el servicio de la API de YouTube v3 con las credenciales autorizadas
-        return build('youtube', 'v3', credentials=self.credentials)
+        return build('youtube', 'v3', credentials=self.yt_credentials)
 
     # Chequea si ya contamos con las credenciales correspondientes o no
     def get_youtube_service(self):
@@ -54,9 +56,9 @@ class YoutubeAPI:
             return self.build_service()
         else:
             # Carga las credenciales almacenadas
-            self.credentials = self.load_credentials()
+            self.yt_credentials = self.load_credentials()
             # Construye y devuelve el servicio de la API de YouTube v3 con las credenciales cargadas
-            return build('youtube', 'v3', credentials=self.credentials)
+            return build('youtube', 'v3', yt_credentials=self.yt_credentials)
 
     # Listar las playlists del usuario en YoutubeMusic
     def list_playlists(self):
@@ -156,3 +158,24 @@ class YoutubeAPI:
             print("Título:", video_info['title'])
             print("ID del video:", video_id)
             print()
+
+    # Creando una playlist de Youtube Music desde cero
+    def create_playlist(self, playlist_name):
+        # Get the YouTube service
+        youtube = self.get_youtube_service()
+
+        # Create the playlist
+        request = youtube.playlists().insert(
+            part="snippet",
+            body={
+                "snippet": {
+                    "title": playlist_name
+                }
+            }
+        )
+        response = request.execute()
+        print("Playlist '{}' created successfully with ID: {}".format(playlist_name, response["id"]))
+
+    def migrate_playlist_from_sp(self,playlist_name):
+        print('Migrate from spotify')
+        #spotify_tracks = self.get_spotify_playlist_tracks()

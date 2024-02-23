@@ -27,6 +27,12 @@ def main():
         # Actualizo las credenciales del usuario de Youtube Music
         elif len(sys.argv) == 3 and sys.argv[1]=='youtube'and sys.argv[2]=='-u':
             youtube_api.update_credentials()
+        # Creamos una playlist de Youtube Music desde cero
+        elif len(sys.argv) == 4 and sys.argv[1]=='youtube' and sys.argv[3]=='-c':
+            youtube_api.create_playlist(sys.argv[2])
+        # Migrando playlist de Spotify a Youtube Music
+        elif len(sys.argv) == 5 and sys.argv[1]=='spotify' and sys.argv[2]=='youtube' and sys.argv[4]=='-m':
+            youtube_api.migrate_playlist_from_sp(sys.argv[3])
     else:
         print('Error con los argumentos')
 
