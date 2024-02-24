@@ -115,7 +115,7 @@ class YoutubeAPI:
         playlist_response = youtube.playlistItems().list(
             part='snippet',
             playlistId=playlist_id,
-            maxResults=50  # Puedes ajustar el número de resultados si es necesario
+            maxResults=100  # Puedes ajustar el número de resultados si es necesario
         ).execute()
 
         print(f'Playlist \"{playlist_name}\" tracks found: \n')
@@ -178,4 +178,5 @@ class YoutubeAPI:
 
     def migrate_playlist_from_sp(self,playlist_name):
         print('Migrate from spotify')
-        #spotify_tracks = self.get_spotify_playlist_tracks()
+        spotify_api = SpotifyAPI()
+        print(json.dumps(spotify_api.get_playlist_data(playlist_name), indent=4))

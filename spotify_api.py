@@ -90,13 +90,52 @@ class SpotifyAPI:
         if playback is not None:
             print(f"\nTotal playback time: {total_playback_time_min:.2f} minutes")
 
+    # Retorna la información de una playlist en particular de Spotify para su migración a otro servicio de streaming
+    def get_playlist_data(self, playlist_name):
+        # En caso de no contar con credenciales dumpeadas las creo
+        if not self.load_credentials():
+            # Realiza el login
+            self.service_login()
+
+        playlist_data = {'tracks':[]}
+        playlist_data['playlist_name'] = playlist_name
+        # Busca la playlist por su nombre
+        res = self.sp.search(q=playlist_name, type='playlist')
+        playlist_info = res['playlists']['items']
+        if playlist_info:
+            playlist_id = playlist_info[0]["id"]
+            playlist_data['playlist_id'] = playlist_id
+            counter = playlist_info[0]['tracks']['total']
+            playlist_data['tracks_counter'] = counter
+        else:
+            print("No se encontró ninguna playlist con ese nombre.")
+            return
+
+        # Obtiene los tracks de la playlist especificada
+        playlist_tracks = self.sp.playlist_tracks(playlist_id)
+        if len(playlist_tracks['items']) >0:
+            for track in playlist_tracks['items']:
+                track_name = track["track"]["name"]
+                artist_name = track["track"]["artists"][0]["name"]  # Suponiendo un solo artista por simplicidad
+                album_info = track["track"]["album"]
+                album_name = album_info["name"]
+                album_release_date = album_info["release_date"]
+                # Obtener géneros musicales de cada artista de la pista
+                artist_id = track["track"]["artists"][0]["id"]
+                artist_info = self.sp.artist(artist_id)
+                genres = artist_info["genres"]
+                playlist_data['tracks'].append({'artist':artist_name, 'track_name':track_name, 'album_name':album_name, 'album_release_date':album_release_date,'genres': genres})
+            return playlist_data
+        else:
+            print('La playlist ingresada no existe o no tiene pistas agregadas')
+
     # Lista los tracks de una playlist en particular de Spotify
     def search_playlist_tracks(self, playlist_name):
         # En caso de no contar con credenciales dumpeadas las creo
         if not self.load_credentials():
             # Realiza el login
             self.service_login()
-            
+
         # Busca la playlist por su nombre
         res = self.sp.search(q=playlist_name, type='playlist')
         playlist_info = res['playlists']['items']
