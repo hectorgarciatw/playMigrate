@@ -115,7 +115,7 @@ class YoutubeAPI:
         playlist_response = youtube.playlistItems().list(
             part='snippet',
             playlistId=playlist_id,
-            maxResults=100  # Puedes ajustar el número de resultados si es necesario
+            maxResults=1000  # Puedes ajustar el número de resultados si es necesario
         ).execute()
 
         print(f'Playlist \"{playlist_name}\" tracks found: \n')
@@ -177,6 +177,59 @@ class YoutubeAPI:
         print("Playlist '{}' created successfully with ID: {}".format(playlist_name, response["id"]))
 
     def migrate_playlist_from_sp(self,playlist_name):
-        print('Migrate from spotify')
+        print('HOLA')
+        # Get the YouTube service
+        youtube = self.get_youtube_service()
+
         spotify_api = SpotifyAPI()
-        print(json.dumps(spotify_api.get_playlist_data(playlist_name), indent=4))
+
+        sp_playlist_data = spotify_api.get_playlist_data(playlist_name)
+
+        # Creamos una playlist vacia
+        request = youtube.playlists().insert(
+            part="snippet",
+            body={
+                "snippet": {
+                    "title": sp_playlist_data['playlist_name']
+                }
+            }
+        )
+        response = request.execute()
+        playlist_id = response["id"]
+
+        # Agregar pistas de Spotify a la playlist de YouTube Music
+        for track in sp_playlist_data['tracks']:
+            # Obtener información de la pista
+            artist_name = track['artist']
+            track_name = track['track_name']
+            
+            # Buscar el vídeo en YouTube que coincida con la pista de Spotify
+            search_response = youtube.search().list(
+                q=f"{artist_name} {track_name}",
+                part="id",
+                type="video",
+                videoCategoryId="10",  # Categoría de música
+                maxResults=1
+            ).execute()
+
+            # Obtener el ID del video de música encontrado
+            video_id = search_response['items'][0]['id']['videoId'] if 'items' in search_response else None
+
+            if video_id:
+                # Agregar el vídeo a la playlist
+                request = youtube.playlistItems().insert(
+                    part="snippet",
+                    body={
+                        "snippet": {
+                            "playlistId": playlist_id,
+                            "resourceId": {
+                                "kind": "youtube#video",
+                                "videoId": video_id
+                            }
+                        }
+                    }
+                )
+                response = request.execute()
+                print(f"Track '{track_name}' agregado exitosamente a la playlist.")
+            else:
+                print(f"No se encontró un video para la pista '{track_name}'.")

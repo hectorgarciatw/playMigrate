@@ -103,7 +103,7 @@ class SpotifyAPI:
         res = self.sp.search(q=playlist_name, type='playlist')
         playlist_info = res['playlists']['items']
         if playlist_info:
-            playlist_id = playlist_info[0]["id"]
+            playlist_id = playlist_info[0]['id']
             playlist_data['playlist_id'] = playlist_id
             counter = playlist_info[0]['tracks']['total']
             playlist_data['tracks_counter'] = counter
@@ -115,16 +115,17 @@ class SpotifyAPI:
         playlist_tracks = self.sp.playlist_tracks(playlist_id)
         if len(playlist_tracks['items']) >0:
             for track in playlist_tracks['items']:
-                track_name = track["track"]["name"]
-                artist_name = track["track"]["artists"][0]["name"]  # Suponiendo un solo artista por simplicidad
-                album_info = track["track"]["album"]
+                track_name = track['track']['name']
+                track_id = track['track']["id"]
+                artist_name = track['track']['artists'][0]['name']  # Suponiendo un solo artista por simplicidad
+                album_info = track['track']['album']
                 album_name = album_info["name"]
-                album_release_date = album_info["release_date"]
+                album_release_date = album_info['release_date']
                 # Obtener géneros musicales de cada artista de la pista
-                artist_id = track["track"]["artists"][0]["id"]
+                artist_id = track['track']['artists'][0]['id']
                 artist_info = self.sp.artist(artist_id)
-                genres = artist_info["genres"]
-                playlist_data['tracks'].append({'artist':artist_name, 'track_name':track_name, 'album_name':album_name, 'album_release_date':album_release_date,'genres': genres})
+                genres = artist_info['genres']
+                playlist_data['tracks'].append({'track_id':track_id,'artist':artist_name,'track_name':track_name, 'album_name':album_name, 'album_release_date':album_release_date,'genres': genres})
             return playlist_data
         else:
             print('La playlist ingresada no existe o no tiene pistas agregadas')
