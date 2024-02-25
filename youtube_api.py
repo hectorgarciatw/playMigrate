@@ -177,7 +177,6 @@ class YoutubeAPI:
         print("Playlist '{}' created successfully with ID: {}".format(playlist_name, response["id"]))
 
     def migrate_playlist_from_sp(self,playlist_name):
-        print('HOLA')
         # Get the YouTube service
         youtube = self.get_youtube_service()
 
