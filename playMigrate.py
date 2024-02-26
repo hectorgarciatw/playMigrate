@@ -45,6 +45,8 @@ def main():
             youtube_api.user_info()
         elif args.u:
             youtube_api.update_credentials()
+        elif args.t:
+            youtube_api.search_playlist_tracks(args.t)
         elif args.c:
             youtube_api.create_playlist(args.c)
         else:

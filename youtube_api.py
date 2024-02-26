@@ -103,7 +103,6 @@ class YoutubeAPI:
     def search_playlist_tracks(self, playlist_name):
         # Obtén el servicio de la API de YouTube
         youtube = self.get_youtube_service()
-
         # Obtén el ID de la lista de reproducción
         playlist_id = self.get_playlist_id_by_name(playlist_name)
 
@@ -115,14 +114,29 @@ class YoutubeAPI:
         playlist_response = youtube.playlistItems().list(
             part='snippet',
             playlistId=playlist_id,
-            maxResults=1000  # Puedes ajustar el número de resultados si es necesario
+            maxResults=1000
         ).execute()
 
-        print(f'Playlist \"{playlist_name}\" tracks found: \n')
-        # Itera sobre los elementos de la playlist e imprime los títulos de los videos
-        for item in playlist_response['items']:
-            audio_title = item['snippet']['title']
-            print(audio_title)
+        # Itera sobre las páginas de resultados
+        while playlist_response:
+            # Itera sobre los elementos de la playlist e imprime los títulos de los videos
+            for item in playlist_response['items']:
+                audio_title = item['snippet']['title']
+                print(audio_title)
+
+            # Verifica si hay más páginas de resultados
+            if 'nextPageToken' in playlist_response:
+                next_page_token = playlist_response['nextPageToken']
+                # Realiza una nueva solicitud utilizando el token de página siguiente
+                playlist_response = youtube.playlistItems().list(
+                    part='snippet',
+                    playlistId=playlist_id,
+                    maxResults=1000,
+                    pageToken=next_page_token
+                ).execute()
+            else:
+                # Si no hay más páginas, sal del bucle
+                break
         print()
         print(f'Playlist Id: \"{playlist_id}\"')
         
