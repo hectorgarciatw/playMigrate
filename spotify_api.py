@@ -132,6 +132,7 @@ class SpotifyAPI:
 
     # Lista los tracks de una playlist en particular de Spotify
     def search_playlist_tracks(self, playlist_name):
+        cont = 0
         # En caso de no contar con credenciales dumpeadas las creo
         if not self.load_credentials():
             # Realiza el login
@@ -146,14 +147,27 @@ class SpotifyAPI:
         else:
             print("No se encontró ninguna playlist con ese nombre.")
             return
+        
+        # Inicializa variables para paginación
+        offset = 0
+        limit = 100  # Número máximo de resultados por página
 
-        # Obtiene los tracks de la playlist especificada
-        playlist_tracks = self.sp.playlist_tracks(playlist_id)
-        if len(playlist_tracks['items']) >0:
-            print(f'Playlist \"{playlist_name}\" with {counter} tracks found: \n')
-            for track in playlist_tracks['items']:
-                track_name = track["track"]["name"]
-                artist_name = track["track"]["artists"][0]["name"]  # Suponiendo un solo artista por simplicidad
-                print(f'{track_name} By {artist_name}')
-        else:
-            print('La playlist ingresada no existe o no tiene pistas agregadas')
+        # Itera mientras haya más tracks por recuperar
+        while True:
+            # Obtiene los tracks de la playlist especificada con paginación
+            playlist_tracks = self.sp.playlist_tracks(playlist_id, offset=offset, limit=limit)
+            if len(playlist_tracks['items']) > 0:
+                print(f'Playlist \"{playlist_name}\" with {counter} tracks found: \n')
+                for track in playlist_tracks['items']:
+                    cont += 1
+                    track_name = track["track"]["name"]
+                    artist_name = track["track"]["artists"][0]["name"]  # Suponiendo un solo artista por simplicidad
+                    print(f'{track_name} By {artist_name}')
+
+                # Actualiza el desplazamiento para obtener la próxima página de resultados
+                offset += limit
+            else:
+                # Si no hay más tracks, sal del bucle
+                break
+        if cont == 0:
+            print('La playlist ingresada no tiene pistas agregadas')
