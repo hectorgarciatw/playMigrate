@@ -1,4 +1,4 @@
-import os,pickle,json
+import os,pickle,json,time
 from dotenv import load_dotenv
 from google_auth_oauthlib.flow import InstalledAppFlow
 from googleapiclient.discovery import build
@@ -212,21 +212,38 @@ class YoutubeAPI:
 
         # Agregar pistas de Spotify a la playlist de YouTube Music
         for track in sp_playlist_data['tracks']:
+            cont = 0
             # Obtener información de la pista
             artist_name = track['artist']
             track_name = track['track_name']
-            
-            # Buscar el vídeo en YouTube que coincida con la pista de Spotify
-            search_response = youtube.search().list(
-                q=f"{artist_name} {track_name}",
-                part="id",
-                type="video",
-                videoCategoryId="10",  # Categoría de música
-                maxResults=1
-            ).execute()
 
-            # Obtener el ID del video de música encontrado
-            video_id = search_response['items'][0]['id']['videoId'] if 'items' in search_response else None
+            # Inicializar variables para paginación
+            page_token = None
+            video_id = None
+            
+            # Realizar búsqueda con paginación hasta encontrar un video válido
+            while not video_id:
+                if cont%5==0:
+                    time.sleep(2)
+                # Buscar el vídeo en YouTube que coincida con la pista de Spotify
+                search_response = youtube.search().list(
+                    q=f"{artist_name} {track_name}",
+                    part="id",
+                    type="video",
+                    videoCategoryId="10",  # Categoría de música
+                    maxResults=1,
+                    pageToken=page_token
+                ).execute()
+
+                # Obtener el ID del video de música encontrado
+                video_id = search_response['items'][0]['id']['videoId'] if 'items' in search_response else None
+
+                # Actualizar el token de página para la próxima iteración si hay más resultados
+                page_token = search_response.get('nextPageToken')
+
+                # Si no hay más resultados, salir del bucle
+                if not page_token:
+                    break
 
             if video_id:
                 # Agregar el vídeo a la playlist
@@ -244,5 +261,6 @@ class YoutubeAPI:
                 )
                 response = request.execute()
                 print(f"Track '{track_name}' agregado exitosamente a la playlist.")
+                cont+=1
             else:
                 print(f"No se encontró un video para la pista '{track_name}'.")
