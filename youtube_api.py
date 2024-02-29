@@ -2,7 +2,7 @@ import os,pickle,json,time
 from dotenv import load_dotenv
 from google_auth_oauthlib.flow import InstalledAppFlow
 from googleapiclient.discovery import build
-
+from googleapiclient.errors import HttpError
 from spotify_api import SpotifyAPI
 
 class YoutubeAPI:
@@ -190,7 +190,8 @@ class YoutubeAPI:
         response = request.execute()
         print("Playlist '{}' created successfully with ID: {}".format(playlist_name, response["id"]))
 
-    def migrate_playlist_from_sp(self,playlist_name):
+
+    def migrate_playlist_from_sp(self, playlist_name):
         # Get the YouTube service
         youtube = self.get_youtube_service()
 
@@ -198,69 +199,250 @@ class YoutubeAPI:
 
         sp_playlist_data = spotify_api.get_playlist_data(playlist_name)
 
-        # Creamos una playlist vacia
-        request = youtube.playlists().insert(
-            part="snippet",
-            body={
-                "snippet": {
-                    "title": sp_playlist_data['playlist_name']
+        try:
+            # Creamos una playlist vacía
+            request = youtube.playlists().insert(
+                part="snippet",
+                body={
+                    "snippet": {
+                        "title": sp_playlist_data['playlist_name']
+                    }
                 }
-            }
-        )
-        response = request.execute()
-        playlist_id = response["id"]
+            )
+            response = request.execute()
+            playlist_id = response["id"]
 
-        # Agregar pistas de Spotify a la playlist de YouTube Music
-        for track in sp_playlist_data['tracks']:
-            cont = 0
-            # Obtener información de la pista
-            artist_name = track['artist']
-            track_name = track['track_name']
+            # Agregar pistas de Spotify a la playlist de YouTube Music
+            for track in sp_playlist_data['tracks']:
+                cont = 0
+                # Obtener información de la pista
+                artist_name = track['artist']
+                track_name = track['track_name']
 
-            # Inicializar variables para paginación
-            page_token = None
-            video_id = None
-            
-            # Realizar búsqueda con paginación hasta encontrar un video válido
-            while not video_id:
-                if cont%5==0:
-                    time.sleep(2)
-                # Buscar el vídeo en YouTube que coincida con la pista de Spotify
-                search_response = youtube.search().list(
-                    q=f"{artist_name} {track_name}",
-                    part="id",
-                    type="video",
-                    videoCategoryId="10",  # Categoría de música
-                    maxResults=1,
-                    pageToken=page_token
-                ).execute()
+                # Inicializar variables para paginación
+                page_token = None
+                video_id = None
 
-                # Obtener el ID del video de música encontrado
-                video_id = search_response['items'][0]['id']['videoId'] if 'items' in search_response else None
+                # Realizar búsqueda con paginación hasta encontrar un video válido
+                while not video_id:
+                    if cont % 5 == 0:
+                        time.sleep(2)
+                    # Buscar el vídeo en YouTube que coincida con la pista de Spotify
+                    search_response = youtube.search().list(
+                        q=f"{artist_name} {track_name}",
+                        part="id",
+                        type="video",
+                        videoCategoryId="10",  # Categoría de música
+                        maxResults=1,
+                        pageToken=page_token
+                    ).execute()
 
-                # Actualizar el token de página para la próxima iteración si hay más resultados
-                page_token = search_response.get('nextPageToken')
+                    # Obtener el ID del video de música encontrado
+                    video_id = search_response['items'][0]['id']['videoId'] if 'items' in search_response else None
 
-                # Si no hay más resultados, salir del bucle
-                if not page_token:
-                    break
+                    # Actualizar el token de página para la próxima iteración si hay más resultados
+                    page_token = search_response.get('nextPageToken')
 
-            if video_id:
-                # Agregar el vídeo a la playlist
-                request = youtube.playlistItems().insert(
-                    part="snippet",
-                    body={
-                        "snippet": {
-                            "playlistId": playlist_id,
-                            "resourceId": {
-                                "kind": "youtube#video",
-                                "videoId": video_id
+                    # Si no hay más resultados, salir del bucle
+                    if not page_token:
+                        break
+
+                if video_id:
+                    # Agregar el vídeo a la playlist
+                    request = youtube.playlistItems().insert(
+                        part="snippet",
+                        body={
+                            "snippet": {
+                                "playlistId": playlist_id,
+                                "resourceId": {
+                                    "kind": "youtube#video",
+                                    "videoId": video_id
+                                }
                             }
                         }
-                    }
-                )
-                response = request.execute()
-                print(f"Track '{track_name}' agregado exitosamente a la playlist.")
-                cont+=1
+                    )
+                    response = request.execute()
+                    print(f"Track '{track_name}' agregado exitosamente a la playlist.")
+                    cont += 1
+                else:
+                    print(f"No se encontró un video para la pista '{track_name}'.")
+        except HttpError as e:
+            if e.resp.status == 403:
+                print('😢 El programa se detiene debido al exceso de la cuota provista por Youtube Music, intente más tarde.')
             else:
-                print(f"No se encontró un video para la pista '{track_name}'.")
+                # Captura cualquier otro error HTTP y muestra detalles
+                print("Ocurrió un error HTTP:", e)
+        except Exception as ex:
+            print("Ocurrió un error:", ex)
+
+            # Get the YouTube service
+            youtube = self.get_youtube_service()
+
+            spotify_api = SpotifyAPI()
+
+            sp_playlist_data = spotify_api.get_playlist_data(playlist_name)
+
+            try:
+                # Creamos una playlist vacía
+                request = youtube.playlists().insert(
+                part="snippet",
+                body={
+                    "snippet": {
+                        "title": sp_playlist_data['playlist_name']
+                    }
+                }
+            )
+                response = request.execute()
+                playlist_id = response["id"]
+
+                # Agregar pistas de Spotify a la playlist de YouTube Music
+                for track in sp_playlist_data['tracks']:
+                    cont = 0
+                    # Obtener información de la pista
+                    artist_name = track['artist']
+                    track_name = track['track_name']
+
+                    # Inicializar variables para paginación
+                    page_token = None
+                    video_id = None
+
+                    # Realizar búsqueda con paginación hasta encontrar un video válido
+                    while not video_id:
+                        if cont % 5 == 0:
+                            time.sleep(2)
+                        # Buscar el vídeo en YouTube que coincida con la pista de Spotify
+                        search_response = youtube.search().list(
+                        q=f"{artist_name} {track_name}",
+                        part="id",
+                        type="video",
+                        videoCategoryId="10",  # Categoría de música
+                        maxResults=1,
+                        pageToken=page_token
+                    ).execute()
+
+                        # Obtener el ID del video de música encontrado
+                        video_id = search_response['items'][0]['id']['videoId'] if 'items' in search_response else None
+
+                        # Actualizar el token de página para la próxima iteración si hay más resultados
+                        page_token = search_response.get('nextPageToken')
+
+                        # Si no hay más resultados, salir del bucle
+                        if not page_token:
+                            break
+
+                    if video_id:
+                        # Agregar el vídeo a la playlist
+                        request = youtube.playlistItems().insert(
+                            part="snippet",
+                            body={
+                                "snippet": {
+                                    "playlistId": playlist_id,
+                                    "resourceId": {
+                                        "kind": "youtube#video",
+                                        "videoId": video_id
+                                    }
+                                }
+                            }
+                        )
+                        response = request.execute()
+                        print(f"Track '{track_name}' agregado exitosamente a la playlist.")
+                        cont += 1
+                    else:
+                        print(f"No se encontró un video para la pista '{track_name}'.")
+            except HttpError as e:
+                if e.resp.status == 403:
+                    print("😢 El programa se detiene debido al exceso de la cuota provista por Youtube Music, intente más tarde.")
+                else:
+                    # Captura cualquier otro error HTTP y muestra detalles
+                    print("Ocurrió un error HTTP:", e)
+            except Exception as ex:
+                print("Ocurrió un error:", ex)
+
+            # Get the YouTube service
+            youtube = self.get_youtube_service()
+
+            spotify_api = SpotifyAPI()
+
+            sp_playlist_data = spotify_api.get_playlist_data(playlist_name)
+            # Creamos una playlist vacia
+            request = youtube.playlists().insert(
+                part="snippet",
+                body={
+                    "snippet": {
+                        "title": sp_playlist_data['playlist_name']
+                    }
+                }
+            )
+            response = request.execute()
+            playlist_id = response["id"]
+        
+            # Agrupar las pistas de Spotify en lotes más pequeños
+            tracks_batches = [sp_playlist_data['tracks'][i:i + batch_size] for i in range(0, len(sp_playlist_data['tracks']), batch_size)]
+
+        
+            # Migrar cada lote de pistas
+            for batch_index, batch in enumerate(tracks_batches):
+                print(f"Procesando lote {batch_index + 1}...")
+                for track in batch:
+                    # Obtener información de la pista
+                    artist_name = track['artist']
+                    track_name = track['track_name']
+
+                    # Inicializar variables para paginación
+                    page_token = None
+                    video_id = None
+
+                    # Realizar búsqueda con paginación hasta encontrar un video válido
+                    while not video_id:
+                        try:
+                            # Buscar el vídeo en YouTube que coincida con la pista de Spotify
+                            search_response = youtube.search().list(
+                                q=f"{artist_name} {track_name}",
+                                part="id",
+                                type="video",
+                                videoCategoryId="10",  # Categoría de música
+                                maxResults=1,
+                                pageToken=page_token
+                            ).execute()
+
+                            # Obtener el ID del video de música encontrado
+                            video_id = search_response['items'][0]['id']['videoId'] if 'items' in search_response else None
+
+                            # Actualizar el token de página para la próxima iteración si hay más resultados
+                            page_token = search_response.get('nextPageToken')
+
+                            # Si no hay más resultados, salir del bucle
+                            if not page_token:
+                                break
+                        except HttpError as e:
+                            
+                            # Verificar si la excepción es por exceso de cuota
+                            if e.resp.status == 403 and 'quotaExceeded' in e.content:
+                                print('😢 El programa se detiene debido al exceso de la cuota provista por Youtube Music, intente más tarde.')
+                                return  # Salir de la función si la cuota está excedida
+                            else:
+                                raise  # Re-levantar la excepción si no es por cuota excedida
+
+                    if video_id:
+                        # Agregar el vídeo a la playlist
+                        request = youtube.playlistItems().insert(
+                            part="snippet",
+                            body={
+                                "snippet": {
+                                    "playlistId": playlist_id,
+                                    "resourceId": {
+                                        "kind": "youtube#video",
+                                        "videoId": video_id
+                                    }
+                                }
+                            }
+                        )
+                        response = request.execute()
+                        print(f"Track '{track_name}' agregado exitosamente a la playlist.")
+                    else:
+                        print(f"No se encontró un video para la pista '{track_name}'.")
+        
+                print(f"Lote {batch_index + 1} procesado. Esperando 2 segundos antes de continuar con el siguiente lote...")
+                time.sleep(2)  # Esperar 2 segundos entre lotes
+
+            print("Migración completada.")

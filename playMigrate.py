@@ -29,7 +29,7 @@ def main():
             print('Error: Falta el nombre de la playlist a migrar')
 
     # Realizar la acción correspondiente
-    if args.platform == 'spotify':
+    if args.platform == 'spotify' and args.destination is None:
         if args.l:
             spotify_api.list_playlists()
         elif args.i:
@@ -38,7 +38,7 @@ def main():
             spotify_api.search_playlist_tracks(args.t)
         else:
             print('Error con los argumentos')
-    elif args.platform == 'youtube':
+    elif args.platform == 'youtube' and args.destination is None:
         if args.l:
             youtube_api.list_playlists()
         elif args.i:
@@ -52,7 +52,7 @@ def main():
         else:
             print('Error con los argumentos')
     else:
-        print('Error con los argumentos')
+        exit()
 
 # script principal, invoca el main
 if __name__ == "__main__":
