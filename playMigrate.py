@@ -27,6 +27,12 @@ def main():
             youtube_api.migrate_playlist_from_sp(args.m)
         else:
             print('Error: Falta el nombre de la playlist a migrar')
+            
+    if args.platform == 'youtube' and args.destination == 'spotify':
+        if args.m:
+            spotify_api.migrate_playlist_from_yt(args.m)
+        else:
+            print('Error: Falta el nombre de la playlist a migrar')
 
     # Realizar la acción correspondiente
     if args.platform == 'spotify' and args.destination is None:

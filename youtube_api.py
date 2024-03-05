@@ -3,7 +3,6 @@ from dotenv import load_dotenv
 from google_auth_oauthlib.flow import InstalledAppFlow
 from googleapiclient.discovery import build
 from googleapiclient.errors import HttpError
-from spotify_api import SpotifyAPI
 
 class YoutubeAPI:
     # Define los alcances de la API de YouTube v3
@@ -140,6 +139,51 @@ class YoutubeAPI:
         print()
         print(f'Playlist Id: \"{playlist_id}\"')
         
+    def get_playlist_tracks(self, playlist_name):
+        # Obtén el servicio de la API de YouTube
+        youtube = self.get_youtube_service()
+        # Obtén el ID de la lista de reproducción
+        playlist_id = self.get_playlist_id_by_name(playlist_name)
+
+        if not playlist_id:
+            print("La lista de reproducción '{}' no fue encontrada.".format(playlist_name))
+            return None
+    
+        tracks_info = []  # Lista para almacenar la información de las pistas
+
+        # Realiza la solicitud para obtener los detalles de la playlist
+        playlist_response = youtube.playlistItems().list(
+            part='snippet',
+            playlistId=playlist_id,
+            maxResults=1000
+        ).execute()
+
+        # Itera sobre las páginas de resultados
+        while playlist_response:
+            # Itera sobre los elementos de la playlist e imprime los títulos de los videos
+            for item in playlist_response['items']:
+                # Extrae la información relevante del elemento y agrégala al diccionario
+                track_info = {
+                    'track_id': item['snippet']['resourceId']['videoId'],
+                    'track_name': item['snippet']['title'],
+                }
+                tracks_info.append(track_info)
+            # Verifica si hay más páginas de resultados
+            if 'nextPageToken' in playlist_response:
+                next_page_token = playlist_response['nextPageToken']
+                # Realiza una nueva solicitud utilizando el token de página siguiente
+                playlist_response = youtube.playlistItems().list(
+                    part='snippet',
+                    playlistId=playlist_id,
+                    maxResults=1000,
+                    pageToken=next_page_token
+                ).execute()
+            else:
+                    # Si no hay más páginas, sal del bucle
+                break
+        # Retorna la lista de información de las pistas
+        return tracks_info
+
     # Retorna información del usuario de Youtube Music
     def user_info(self):
         # Obtén el servicio de la API de YouTube
