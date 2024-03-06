@@ -18,6 +18,7 @@ def main():
     parser.add_argument('-c', metavar='PLAYLIST_NAME', help='Crear una playlist (especificar el nombre)')
     parser.add_argument('-t', metavar='PLAYLIST_NAME', help='Listar tracks de una playlist específica')
     parser.add_argument('-m', metavar='PLAYLIST_NAME', help='Migrar playlist de Spotify a YouTube Music')
+    parser.add_argument('-csv', metavar='PLAYLIST_NAME', help='Descargar data de la playlist en un archivo CSV')
 
     # Parsear los argumentos
     args = parser.parse_args()
@@ -44,6 +45,8 @@ def main():
             spotify_api.search_playlist_tracks(args.t)
         elif args.c:
             spotify_api.create_playlist(args.c)
+        elif args.csv:
+            spotify_api.get_playlist_csv(args.csv)
         else:
             print('Error con los argumentos')
     elif args.platform == 'youtube' and args.destination is None:

@@ -229,6 +229,7 @@ class SpotifyAPI:
         except spotipy.SpotifyException as e:
             print("Error creating the playlist:", e)
 
+    # Migración de una playlist de Youtube Music a Spotify
     def migrate_playlist_from_yt(self, playlist_name):
         print('Starting the playlist migration process...')
         youtube_api = YoutubeAPI()
@@ -281,3 +282,7 @@ class SpotifyAPI:
         self.sp.playlist_add_items(playlist_id, track_uris)
         print("Pistas añadidas a la lista de reproducción con éxito.")
 
+    def get_playlist_csv(self,playlist_name):
+        local_path = os.path.dirname(__file__)
+        print(local_path)
+        #TO DO 
