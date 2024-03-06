@@ -19,6 +19,7 @@ class SpotifyAPI:
 
         # Inicializa el objeto Spotify
         self.sp = spotipy.Spotify(auth_manager=self.sp_oauth)
+        self.username = self.sp.me()['id']
 
     def service_login(self):
         # Obtiene el token de acceso (se conecta vía browser para obtener permisos)
@@ -49,10 +50,13 @@ class SpotifyAPI:
         counter = len(playlists['items'])
         tracks = 0
 
-        print(f'My Spotify playlists:')
+        print()
+        print(f'My Spotify playlists:\n')
         for playlist in playlists['items']:
-            print('* ' + playlist['name'])
+            print(f'* {playlist['name']} (id: {playlist["id"]})')
             tracks += playlist["tracks"]["total"]
+
+        print()
         print(f'Playlists found: {counter}')
         print(f'Total tracks found:{tracks}')
 
@@ -207,6 +211,16 @@ class SpotifyAPI:
         else:
             print("No se encontró la canción")
             return None
+        
+    # Creando una playlist de Spotify desde cero
+    def create_playlist(self, playlist_name):
+        try:
+            # Crear una nueva lista de reproducción en Spotify con el mismo nombre
+            playlist = self.sp.user_playlist_create(user=self.username, name=playlist_name, public=True)
+            playlist_id = playlist['id']
+            print(f'Playlist created successfully with ID: {playlist_id}')
+        except spotipy.SpotifyException as e:
+            print("Error al crear la playlist:", e)
 
     def migrate_playlist_from_yt(self, playlist_name):
         youtube_api = YoutubeAPI()
@@ -226,8 +240,6 @@ class SpotifyAPI:
                 tracks_to_migrate.append({'track_name':track['track_name'],'artist':artist})
             else:
                 print('No se pudo encontrar un artista de una pista de la playlist')
-
-        #print(tracks_to_migrate)
 
         # Obtiene la información del perfil del usuario
         profile_info = self.sp.me()

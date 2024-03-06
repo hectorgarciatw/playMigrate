@@ -11,7 +11,7 @@ def main():
 
     # Agregar los argumentos
     parser.add_argument('platform', choices=['spotify', 'youtube'], help='Plataforma a interactuar (spotify o youtube)')
-    parser.add_argument('destination', nargs='?', choices=['spotify', 'youtube'], default=None, help='Servicio de destino de la playlist (opcional)')
+    parser.add_argument('destination', nargs='?', default=None, help='Servicio de destino de la playlist (opcional)')
     parser.add_argument('-l', action='store_true', help='Listar todas las playlists')
     parser.add_argument('-i', action='store_true', help='Mostrar información del usuario')
     parser.add_argument('-u', action='store_true', help='Actualizar credenciales')
@@ -42,6 +42,8 @@ def main():
             spotify_api.user_info()
         elif args.t:
             spotify_api.search_playlist_tracks(args.t)
+        elif args.c:
+            spotify_api.create_playlist(args.c)
         else:
             print('Error con los argumentos')
     elif args.platform == 'youtube' and args.destination is None:

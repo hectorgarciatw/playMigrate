@@ -72,11 +72,28 @@ class YoutubeAPI:
         )
         response = request.execute()
 
+        total_playlists = len(response['items'])
+        total_tracks = 0
+
         # Imprime las listas de reproducción del usuario
+        print()
+        print(f'My Youtube Music playlists:\n')
         for playlist in response['items']:
-            print('Título de la lista de reproducción:', playlist['snippet']['title'])
-            print('ID de la lista de reproducción:', playlist['id'])
+            print(f'* {playlist['snippet']['title']} (id: {playlist['id']})')
+            # Realiza una solicitud para obtener los detalles de la lista de reproducción
+            playlist_id = playlist['id']
+            playlist_details = youtube.playlistItems().list(
+                part='snippet',
+                playlistId=playlist_id,
+                maxResults=50  # Ajusta el número de resultados por página
+            ).execute()
+    
+            # Suma la cantidad de pistas en esta lista de reproducción a la cantidad total de pistas
+            total_tracks += len(playlist_details['items'])
             print()
+        print(f'Playlists found: {total_playlists}')
+        print(f'Total tracks found: {total_tracks}')
+
 
     def get_playlist_id_by_name(self, playlist_name):
         # Obtén el servicio de la API de YouTube
@@ -86,7 +103,7 @@ class YoutubeAPI:
         request = youtube.playlists().list(
             part='id,snippet',
             mine=True,
-            maxResults=50  # Ajusta el número de resultados por página según tu necesidad
+            maxResults=100
         )
         response = request.execute()
 
@@ -134,7 +151,6 @@ class YoutubeAPI:
                     pageToken=next_page_token
                 ).execute()
             else:
-                # Si no hay más páginas, sal del bucle
                 break
         print()
         print(f'Playlist Id: \"{playlist_id}\"')
@@ -179,9 +195,7 @@ class YoutubeAPI:
                     pageToken=next_page_token
                 ).execute()
             else:
-                    # Si no hay más páginas, sal del bucle
                 break
-        # Retorna la lista de información de las pistas
         return tracks_info
 
     # Retorna información del usuario de Youtube Music
@@ -195,27 +209,8 @@ class YoutubeAPI:
 
         print("Información del usuario:")
         print("Nombre de usuario:", user_info['title'])
-        print("Descripción:", user_info['description'])
-        print("País:", user_info['country'])
-
-        # Obtiene las 10 canciones más reproducidas
-        playlist_items_response = youtube.playlistItems().list(
-            part='contentDetails',
-            playlistId='PL4fGSI1pDJn6XWshnH9CTP9NWNtquAYTh',  # ID de la playlist "Top 100 Most Popular Songs"
-            maxResults=10
-        ).execute()
-
-        print("\nLas 10 canciones más reproducidas:")
-        for item in playlist_items_response['items']:
-            video_id = item['contentDetails']['videoId']
-            video_response = youtube.videos().list(
-                part='snippet',
-                id=video_id
-            ).execute()
-            video_info = video_response['items'][0]['snippet']
-            print("Título:", video_info['title'])
-            print("ID del video:", video_id)
-            print()
+        print("Descripción:", user_info.get('description', 'No disponible'))
+        print("País:", user_info.get('country', 'No disponible'))
 
     # Creando una playlist de Youtube Music desde cero
     def create_playlist(self, playlist_name):
