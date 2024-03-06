@@ -117,13 +117,14 @@ class YoutubeAPI:
 
     # Lista los tracks de una playlist en particular de Youtube Music
     def search_playlist_tracks(self, playlist_name):
+        cont = 0
         # Obtén el servicio de la API de YouTube
         youtube = self.get_youtube_service()
         # Obtén el ID de la lista de reproducción
         playlist_id = self.get_playlist_id_by_name(playlist_name)
 
         if not playlist_id:
-            print("La lista de reproducción '{}' no fue encontrada.".format(playlist_name))
+            print("The playlist '{}' was not found.".format(playlist_name))
             return
         
         # Realiza la solicitud para obtener los detalles de la playlist
@@ -133,12 +134,17 @@ class YoutubeAPI:
             maxResults=1000
         ).execute()
 
+        counter = playlist_response.get('pageInfo', {}).get('totalResults', 0)
+
+        print()
         # Itera sobre las páginas de resultados
         while playlist_response:
+            cont+=1
+            print(f'Playlist \"{playlist_name}\" with {counter}  tracks found: \n')
             # Itera sobre los elementos de la playlist e imprime los títulos de los videos
             for item in playlist_response['items']:
                 audio_title = item['snippet']['title']
-                print(audio_title)
+                print(f'* {audio_title}')
 
             # Verifica si hay más páginas de resultados
             if 'nextPageToken' in playlist_response:
@@ -162,7 +168,7 @@ class YoutubeAPI:
         playlist_id = self.get_playlist_id_by_name(playlist_name)
 
         if not playlist_id:
-            print("La lista de reproducción '{}' no fue encontrada.".format(playlist_name))
+            print("The playlist '{}' was not found.".format(playlist_name))
             return None
     
         tracks_info = []  # Lista para almacenar la información de las pistas
@@ -207,10 +213,10 @@ class YoutubeAPI:
         user_info_response = youtube.channels().list(part='snippet', mine=True).execute()
         user_info = user_info_response['items'][0]['snippet']
 
-        print("Información del usuario:")
-        print("Nombre de usuario:", user_info['title'])
-        print("Descripción:", user_info.get('description', 'No disponible'))
-        print("País:", user_info.get('country', 'No disponible'))
+        print("User info:")
+        print("Username:", user_info['title'])
+        print("Descriprion:", user_info.get('description', 'Not available'))
+        print("Country:", user_info.get('country', 'Not available'))
 
     # Creando una playlist de Youtube Music desde cero
     def create_playlist(self, playlist_name):
@@ -301,18 +307,18 @@ class YoutubeAPI:
                         }
                     )
                     response = request.execute()
-                    print(f"Track '{track_name}' agregado exitosamente a la playlist.")
+                    print(f"Track '{track_name}' successfully added to the playlist.")
                     cont += 1
                 else:
-                    print(f"No se encontró un video para la pista '{track_name}'.")
+                    print(f"No track found for the song '{track_name}'.")
         except HttpError as e:
             if e.resp.status == 403:
-                print('😢 El programa se detiene debido al exceso de la cuota provista por Youtube Music, intente más tarde.')
+                print('😢 The program stops due to exceeding the quota provided by YouTube Music, please try again later.')
             else:
                 # Captura cualquier otro error HTTP y muestra detalles
-                print("Ocurrió un error HTTP:", e)
+                print("An HTTP error occurred:", e)
         except Exception as ex:
-            print("Ocurrió un error:", ex)
+            print("Sorry, an error occurred:", ex)
 
             # Get the YouTube service
             youtube = self.get_youtube_service()
@@ -384,18 +390,18 @@ class YoutubeAPI:
                             }
                         )
                         response = request.execute()
-                        print(f"Track '{track_name}' agregado exitosamente a la playlist.")
+                        print(f"Track '{track_name}' successfully added to the playlist.")
                         cont += 1
                     else:
-                        print(f"No se encontró un video para la pista '{track_name}'.")
+                        print(f"No track found for the song '{track_name}'.")
             except HttpError as e:
                 if e.resp.status == 403:
-                    print("😢 El programa se detiene debido al exceso de la cuota provista por Youtube Music, intente más tarde.")
+                    print("😢 The program has stopped due to exceeding the quota provided by YouTube Music, please try again later.")
                 else:
                     # Captura cualquier otro error HTTP y muestra detalles
-                    print("Ocurrió un error HTTP:", e)
+                    print("An HTTP error occurred:", e)
             except Exception as ex:
-                print("Ocurrió un error:", ex)
+                print("An error occurred:", ex)
 
             # Get the YouTube service
             youtube = self.get_youtube_service()
@@ -421,7 +427,7 @@ class YoutubeAPI:
         
             # Migrar cada lote de pistas
             for batch_index, batch in enumerate(tracks_batches):
-                print(f"Procesando lote {batch_index + 1}...")
+                print(f"Processing batch {batch_index + 1}...")
                 for track in batch:
                     # Obtener información de la pista
                     artist_name = track['artist']
@@ -457,7 +463,7 @@ class YoutubeAPI:
                             
                             # Verificar si la excepción es por exceso de cuota
                             if e.resp.status == 403 and 'quotaExceeded' in e.content:
-                                print('😢 El programa se detiene debido al exceso de la cuota provista por Youtube Music, intente más tarde.')
+                                print('😢 The program has stopped due to exceeding the quota provided by Youtube Music, please try again later')
                                 return  # Salir de la función si la cuota está excedida
                             else:
                                 raise  # Re-levantar la excepción si no es por cuota excedida
@@ -477,11 +483,11 @@ class YoutubeAPI:
                             }
                         )
                         response = request.execute()
-                        print(f"Track '{track_name}' agregado exitosamente a la playlist.")
+                        print(f"Track '{track_name}' successfully added to the playlist")
                     else:
-                        print(f"No se encontró un video para la pista '{track_name}'.")
+                        print(f"No track found for the song '{track_name}'.")
         
-                print(f"Lote {batch_index + 1} procesado. Esperando 2 segundos antes de continuar con el siguiente lote...")
+                print(f"Batch {batch_index + 1} processed. Waiting 2 seconds before continuing with the next batch...")
                 time.sleep(2)  # Esperar 2 segundos entre lotes
 
-            print("Migración completada.")
+            print("Migration completed")

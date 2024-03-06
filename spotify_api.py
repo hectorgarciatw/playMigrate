@@ -113,7 +113,7 @@ class SpotifyAPI:
             counter = playlist_info[0]['tracks']['total']
             playlist_data['tracks_counter'] = counter
         else:
-            print("No se encontró ninguna playlist con ese nombre.")
+            print("No playlist found with that name")
             return
 
         # Obtiene los tracks de la playlist especificada
@@ -150,7 +150,7 @@ class SpotifyAPI:
             playlist_id = playlist_info[0]["id"]
             counter = playlist_info[0]['tracks']['total']
         else:
-            print("No se encontró ninguna playlist con ese nombre.")
+            print("No playlist found with that name")
             return
         
         # Inicializa variables para paginación
@@ -158,6 +158,7 @@ class SpotifyAPI:
         limit = 100  # Número máximo de resultados por página
 
         # Itera mientras haya más tracks por recuperar
+        print()
         while True:
             # Obtiene los tracks de la playlist especificada con paginación
             playlist_tracks = self.sp.playlist_tracks(playlist_id, offset=offset, limit=limit)
@@ -167,7 +168,13 @@ class SpotifyAPI:
                     cont += 1
                     track_name = track["track"]["name"]
                     artist_name = track["track"]["artists"][0]["name"]  # Suponiendo un solo artista por simplicidad
-                    print(f'{track_name} By {artist_name}')
+                    album_id = track["track"]["album"]["id"]
+        
+                    # Obtener información del álbum
+                    album_info = self.sp.album(album_id)
+                    album_name = album_info["name"]
+                    release_date = album_info["release_date"]
+                    print(f'* {track_name} by {artist_name} from the album  {album_name} released on {release_date}')
 
                 # Actualiza el desplazamiento para obtener la próxima página de resultados
                 offset += limit
@@ -175,7 +182,7 @@ class SpotifyAPI:
                 # Si no hay más tracks, sal del bucle
                 break
         if cont == 0:
-            print('La playlist ingresada no tiene pistas agregadas')
+            print('The entered playlist has no tracks added')
 
     # Busca el artista y el nombre de la canción de a partir de una canción en particular
     def search_song_info(self,song_title):
@@ -220,14 +227,15 @@ class SpotifyAPI:
             playlist_id = playlist['id']
             print(f'Playlist created successfully with ID: {playlist_id}')
         except spotipy.SpotifyException as e:
-            print("Error al crear la playlist:", e)
+            print("Error creating the playlist:", e)
 
     def migrate_playlist_from_yt(self, playlist_name):
+        print('Starting the playlist migration process...')
         youtube_api = YoutubeAPI()
         tracks_to_migrate = []
         # Avisamos al usuario que la playlist que se quiere migrar no existe en Youtube Music
         if youtube_api.get_playlist_id_by_name(playlist_name) is None:
-            print(f'La playlist ingresada "{playlist_name}" no existe')
+            print(f'The entered playlist "{playlist_name}" does not exist')
             sys.exit()
 
         # Obtener la info de las pistas de la lista de reproducción de YouTube Music
@@ -239,7 +247,7 @@ class SpotifyAPI:
             if artist is not None:
                 tracks_to_migrate.append({'track_name':track['track_name'],'artist':artist})
             else:
-                print('No se pudo encontrar un artista de una pista de la playlist')
+                print('An artist for a track in the playlist could not be found')
 
         # Obtiene la información del perfil del usuario
         profile_info = self.sp.me()
@@ -267,7 +275,7 @@ class SpotifyAPI:
                 track_uri = result['tracks']['items'][0]['uri']
                 track_uris.append(track_uri)
             else:
-                print(f"No se pudo encontrar la pista '{track['track_name']}' de '{track['artist']}' en Spotify.")
+                print(f"The track could not be found '{track['track_name']}' of '{track['artist']}' in Spotify.")
 
         # Añadir las pistas a la lista de reproducción
         self.sp.playlist_add_items(playlist_id, track_uris)
