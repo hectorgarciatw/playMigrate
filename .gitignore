@@ -1,2 +1,6 @@
 .env
 client_secret_249986949363-k8ro9gijcpevkmpap9va4gq7neojcegq.apps.googleusercontent.com.json
+.cache
+__pycache__
+sp_credentials.pickle
+yt_credentials.pickle

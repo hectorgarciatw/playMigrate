@@ -1,3 +1,4 @@
 spotipy
 dotenv
 google-api-python-client
+openpyxl

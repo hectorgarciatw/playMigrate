@@ -1,8 +1,9 @@
-import os,pickle,pprint,sys,csv
+import os,pickle,pprint,sys,csv,json
 import spotipy
 from spotipy.oauth2 import SpotifyOAuth
 from dotenv import load_dotenv
 from youtube_api import YoutubeAPI
+from openpyxl import Workbook
 
 class SpotifyAPI:
     def __init__(self):
@@ -282,16 +283,23 @@ class SpotifyAPI:
         self.sp.playlist_add_items(playlist_id, track_uris)
         print("Pistas añadidas a la lista de reproducción con éxito.")
 
-    # Exporta la información de una playlist de Spotify en formátos CSV,JSON,PDF,XLSX y HTML
-    def get_playlist_csv(self,playlist_name):
+    # Crea (en caso de no existir) el directorio de descargas de archivos CSV,JSON,PDF,XLSX y HTML
+    def create_download_folder(self,extension):
         local_path = os.path.dirname(__file__)
-        sub_directories = ["downloads", "csv"]  # Lista de subdirectorios
-        folder = os.path.join(local_path, *sub_directories)
-        # Verificar si el directorio no existe antes de crearlo
-        if not os.path.exists(folder):
-            os.makedirs(folder)
-            print(f"Folder '{folder}' created successfully")
+        sub_directories = ["downloads", extension]  # Lista de subdirectorios
+        folder_path = os.path.join(local_path, *sub_directories)
 
+        # Verificar si el directorio no existe antes de crearlo
+        if not os.path.exists(folder_path):
+            try:
+                os.makedirs(folder_path)
+                print(f"Folder '{folder_path}' created successfully")
+            except OSError as e:
+                raise OSError(f"Unable to create the directory '{folder_path}': {e}")
+        return folder_path
+
+    # Exporta la información de una playlist de Spotify en formátos CSV
+    def get_playlist_csv(self,playlist_name):
         data_csv = [['track_title','artist','album','year','playlist','service']]
         # Obtengo la informacion de la playlist de Spotify
         playlist_data = self.get_playlist_data(playlist_name)
@@ -300,13 +308,65 @@ class SpotifyAPI:
             artist = cancion['artist']
             album = cancion['album_name']
             year = cancion['album_release_date'][:4]  # Extrae sólo los primeros cuatro caracteres (el año)
-            data_csv.append([track_title,artist,album,year,playlist_name,'spotify'])
+            data_csv.append([track_title,artist,album,year,playlist_name,'Spotify'])
 
-        folder = os.path.join(folder, playlist_name + "_spotify.csv")
+        file_path = os.path.join(self.create_download_folder('csv'), playlist_name + "_spotify.csv")
 
-        with open(folder, mode='w', newline='', encoding='utf-8') as file_csv:
-            escritor_csv = csv.writer(file_csv)
-            for fila in data_csv:
-                escritor_csv.writerow(fila)
+        try:
+            with open(file_path, mode='w', newline='', encoding='utf-8') as file_csv:
+                escritor_csv = csv.writer(file_csv)
+                for row in data_csv:
+                    escritor_csv.writerow(row)
 
-        print(f"Archivo CSV '{folder}' creado exitosamente.")
+            print(f"CSV file '{file_path}' successfully created")
+        except Exception as e:
+            print(f"Error creating the CSV file: {e}")
+
+    # Exporta la información de una playlist de Spotify en formátos JSON
+    def get_playlist_json(self,playlist_name):
+        data_json = []
+        playlist_data = self.get_playlist_data(playlist_name)
+        for cancion in playlist_data['tracks']:
+            track_title = cancion['track_name']
+            artist = cancion['artist']
+            album = cancion['album_name']
+            year = cancion['album_release_date'][:4]  # Extrae sólo los primeros cuatro caracteres (el año)
+            data_json.append({'track_title':track_title,'artist':artist,'album':album,'year':year,'playlist':playlist_name,'service':'Spotify'})
+        file_path = os.path.join(self.create_download_folder('json'), playlist_name + "_spotify.json")
+        try:
+            with open(file_path, "w", encoding="utf-8") as file:
+                json.dump(data_json, file, indent=4, ensure_ascii=False)
+                print(f"JSON file '{file_path}' successfully created")
+        except Exception as e:
+            print(f"Error creating the JSON file: {e}")
+
+    # Exporta la información de una playlist de Spotify en formátos XLSX
+    def get_playlist_xlsx(self,playlist_name):
+        data_xlsx = []
+        playlist_data = self.get_playlist_data(playlist_name)
+        for track in playlist_data['tracks']:
+            track_title = track['track_name']
+            artist = track['artist']
+            album = track['album_name']
+            year = track['album_release_date'][:4]  # Extrae sólo los primeros cuatro caracteres (el año)
+            data_xlsx.append({'track_title':track_title,'artist':artist,'album':album,'year':year,'playlist':playlist_name,'service':'Spotify'})
+        
+        # Crear un nuevo libro de trabajo de Excel
+        try:
+            wb = Workbook()
+            sheet = wb.active
+            sheet.title = playlist_name + ' spotify playlist info'
+
+            # Escribir encabezados
+            sheet.append(["Track title", "Artist", "Album", "Year","Playlist","Service"])
+
+            # Escribir datos de la playlist
+            for track in data_xlsx:
+                sheet.append([track["track_title"], track["artist"], track["album"],track["year"],track["playlist"],track["service"]])
+
+            # Guardar el libro de trabajo en un archivo Excel
+            file = os.path.join(self.create_download_folder('xlsx'), playlist_name + "_spotify.xlsx")
+            wb.save(file)
+            print(f"XLSX file successfully created")
+        except Exception as e:
+            print(f"Error creating the Excel file: {e}")
