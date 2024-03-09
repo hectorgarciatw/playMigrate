@@ -8,6 +8,7 @@ Aplicación de Python para administrar y migrar playlists entre diversos servici
 - [**Spotipy**](https://pypi.org/project/spotipy/) - Interacción con la API de Spotify.
 - [**Google-api-python-client**](https://pypi.org/project/google-api-python-client/) - Interacción con la API de Google (Youtube API).
 - [**Dotenv**](https://pypi.org/project/python-dotenv/) - Manejo de variables de entornos.
+- - [**Openpyxl**]([https://pypi.org/project/python-dotenv/](https://pypi.org/project/openpyxl/)) - Manejo y creación de archivos XLSX.
 
 ## ⌨️ Comandos disponibles
 
