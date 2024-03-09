@@ -20,6 +20,7 @@ Aplicación de Python para administrar y migrar playlists entre diversos servici
 | ⚙️  | `playMigrate.py youtube -t playlist_name`        | Lista las pistas de la playlist 'playlist_name' de Youtube Music con información de interés. |
 | ⚙️  | `playMigrate.py spotify youtube -m playlist_name`        | Migra las pistas de la playlist 'playlist_name' del usuario de Spotify a Youtube Music. |
 | ⚙️  | `playMigrate.py spotify -l` | Lista todas las playlists de Spotify.  |
+| ⚙️  | `playMigrate.py spotify -ujson playlist_name` | Crea en Spotify una playlist con sus pistas desde un archivo JSON.  |
 | ⚙️  | `playMigrate.py spotify -csv playlist_name` | Descarga información y contenido de la playlist en formáto CSV.  |
 | ⚙️  | `playMigrate.py spotify -json playlist_name` | Descarga información y contenido de la playlist en formáto JSON.  |
 | ⚙️  | `playMigrate.py spotify -xlsx playlist_name` | Descarga información y contenido de la playlist en formáto XLSX.  |
