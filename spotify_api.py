@@ -370,3 +370,44 @@ class SpotifyAPI:
             print(f"XLSX file successfully created")
         except Exception as e:
             print(f"Error creating the Excel file: {e}")
+
+    # Importa la información de una playlist de Spotify desde un archivo local en formáto JSON
+    def upload_playlist_from_json(self,playlist_name):
+        local_path = os.path.dirname(__file__)
+        sub_directories = ['downloads', 'json']  # Lista de subdirectorios
+        folder_path = os.path.join(local_path, *sub_directories)
+        json_file = os.path.join(folder_path,playlist_name + '_spotify.json')
+        try:
+            with open(json_file, 'r', encoding='utf-8') as file:
+                # Carga el contenido del archivo JSON en un diccionario
+                playlist_data = json.load(file)
+
+                # En caso de no contar con credenciales dumpeadas las creo
+                if not self.load_credentials():
+                    # Realiza el login
+                    self.service_login()
+
+                playlist_description = "A playlist with songs uploaded with playMigrate"
+                user_id = self.sp.current_user()["id"]
+                playlist = self.sp.user_playlist_create(user_id, playlist_name, public=True, description=playlist_description)
+
+                # Agrega las canciones a la playlist
+                track_uris = []
+                for track_info in playlist_data:
+                    results = self.sp.search(q=f"{track_info['track_title']} {track_info['artist']}", type="track")
+                    if results['tracks']['items']:
+                        track_uri = results['tracks']['items'][0]['uri']
+                        track_name = results['tracks']['items'][0]['name']
+                        artist_name = results['tracks']['items'][0]['artists'][0]['name']
+                        print(f"* Adding track: '{track_name}' of '{artist_name}'")
+                        track_uris.append(track_uri)
+
+                self.sp.playlist_add_items(playlist['id'], track_uris)
+                print('Spotify playlist created successfully with playMigrate!')
+        
+        except FileNotFoundError:
+            print("The file was not found")
+        except json.decoder.JSONDecodeError:
+            print("The file does not have a valid JSON format")
+        except Exception as e:
+            print("An error occurred while trying to read the JSON file:", e)

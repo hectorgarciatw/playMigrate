@@ -21,6 +21,7 @@ def main():
     parser.add_argument('-csv', metavar='PLAYLIST_NAME', help='Descargar data de la playlist en un archivo CSV')
     parser.add_argument('-json', metavar='PLAYLIST_NAME', help='Descargar data de la playlist en un archivo JSON')
     parser.add_argument('-xlsx', metavar='PLAYLIST_NAME', help='Descargar data de la playlist en un archivo Excel')
+    parser.add_argument('-ujson', metavar='PLAYLIST_NAME', help='Carga en Spotify una playlist con sus pistas desde un archivo JSON')
 
     # Parsear los argumentos
     args = parser.parse_args()
@@ -53,6 +54,8 @@ def main():
             spotify_api.get_playlist_json(args.json)
         elif args.xlsx:
             spotify_api.get_playlist_xlsx(args.xlsx)
+        elif args.ujson:
+            spotify_api.upload_playlist_from_json(args.ujson)
         else:
             print('Error con los argumentos')
     elif args.platform == 'youtube' and args.destination is None:
