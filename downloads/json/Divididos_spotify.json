@@ -1,133 +1,5 @@
 [
     {
-        "track_title": "Che, ¿qué Esperás?",
-        "artist": "Divididos",
-        "album": "Haciendo Cosas Raras",
-        "year": "2018",
-        "playlist": "Divididos",
-        "service": "Spotify"
-    },
-    {
-        "track_title": "Gárgara Larga",
-        "artist": "Divididos",
-        "album": "Haciendo Cosas Raras",
-        "year": "2018",
-        "playlist": "Divididos",
-        "service": "Spotify"
-    },
-    {
-        "track_title": "Haciendo Cosas Raras",
-        "artist": "Divididos",
-        "album": "Haciendo Cosas Raras",
-        "year": "2018",
-        "playlist": "Divididos",
-        "service": "Spotify"
-    },
-    {
-        "track_title": "Light My Fire (Enciende Mi Fuego)",
-        "artist": "Divididos",
-        "album": "Haciendo Cosas Raras",
-        "year": "2018",
-        "playlist": "Divididos",
-        "service": "Spotify"
-    },
-    {
-        "track_title": "Hombre en U",
-        "artist": "Divididos",
-        "album": "Amapola del 66",
-        "year": "2010",
-        "playlist": "Divididos",
-        "service": "Spotify"
-    },
-    {
-        "track_title": "Buscando un Ángel",
-        "artist": "Divididos",
-        "album": "Amapola del 66",
-        "year": "2010",
-        "playlist": "Divididos",
-        "service": "Spotify"
-    },
-    {
-        "track_title": "Mantecoso",
-        "artist": "Divididos",
-        "album": "Amapola del 66",
-        "year": "2010",
-        "playlist": "Divididos",
-        "service": "Spotify"
-    },
-    {
-        "track_title": "Muerto a Laburar",
-        "artist": "Divididos",
-        "album": "Amapola del 66",
-        "year": "2010",
-        "playlist": "Divididos",
-        "service": "Spotify"
-    },
-    {
-        "track_title": "Amapola del 66",
-        "artist": "Divididos",
-        "album": "Amapola del 66",
-        "year": "2010",
-        "playlist": "Divididos",
-        "service": "Spotify"
-    },
-    {
-        "track_title": "Cajita Musical",
-        "artist": "Divididos",
-        "album": "Vengo Del Placard De Otro",
-        "year": "2002",
-        "playlist": "Divididos",
-        "service": "Spotify"
-    },
-    {
-        "track_title": "Ay, Que Dios Boludo",
-        "artist": "Divididos",
-        "album": "Vengo Del Placard De Otro",
-        "year": "2002",
-        "playlist": "Divididos",
-        "service": "Spotify"
-    },
-    {
-        "track_title": "Miente el After Hour",
-        "artist": "Divididos",
-        "album": "Vengo Del Placard De Otro",
-        "year": "2002",
-        "playlist": "Divididos",
-        "service": "Spotify"
-    },
-    {
-        "track_title": "Despiértate Nena",
-        "artist": "Divididos",
-        "album": "Vengo Del Placard De Otro",
-        "year": "2002",
-        "playlist": "Divididos",
-        "service": "Spotify"
-    },
-    {
-        "track_title": "Vengo del Placard de Otro",
-        "artist": "Divididos",
-        "album": "Vengo Del Placard De Otro",
-        "year": "2002",
-        "playlist": "Divididos",
-        "service": "Spotify"
-    },
-    {
-        "track_title": "Un Alegre en Este Infierno",
-        "artist": "Divididos",
-        "album": "Vengo Del Placard De Otro",
-        "year": "2002",
-        "playlist": "Divididos",
-        "service": "Spotify"
-    },
-    {
-        "track_title": "Casi Estatua",
-        "artist": "Divididos",
-        "album": "Narigón del Siglo, Yo Te Dejo Perfumado en la Esquina para Siempre",
-        "year": "2000",
-        "playlist": "Divididos",
-        "service": "Spotify"
-    },
-    {
         "track_title": "Spaghetti del Rock",
         "artist": "Divididos",
         "album": "Narigón del Siglo, Yo Te Dejo Perfumado en la Esquina para Siempre",
@@ -136,114 +8,10 @@
         "service": "Spotify"
     },
     {
-        "track_title": "Elefantes en Europa",
+        "track_title": "Par Mil",
         "artist": "Divididos",
         "album": "Narigón del Siglo, Yo Te Dejo Perfumado en la Esquina para Siempre",
         "year": "2000",
-        "playlist": "Divididos",
-        "service": "Spotify"
-    },
-    {
-        "track_title": "Vida de Topos",
-        "artist": "Divididos",
-        "album": "Narigón del Siglo, Yo Te Dejo Perfumado en la Esquina para Siempre",
-        "year": "2000",
-        "playlist": "Divididos",
-        "service": "Spotify"
-    },
-    {
-        "track_title": "La Ñapi de Mamá",
-        "artist": "Divididos",
-        "album": "Narigón del Siglo, Yo Te Dejo Perfumado en la Esquina para Siempre",
-        "year": "2000",
-        "playlist": "Divididos",
-        "service": "Spotify"
-    },
-    {
-        "track_title": "Como un Cuento",
-        "artist": "Divididos",
-        "album": "Narigón del Siglo, Yo Te Dejo Perfumado en la Esquina para Siempre",
-        "year": "2000",
-        "playlist": "Divididos",
-        "service": "Spotify"
-    },
-    {
-        "track_title": "Sopa de Tortuga",
-        "artist": "Divididos",
-        "album": "Narigón del Siglo, Yo Te Dejo Perfumado en la Esquina para Siempre",
-        "year": "2000",
-        "playlist": "Divididos",
-        "service": "Spotify"
-    },
-    {
-        "track_title": "Nene de Antes",
-        "artist": "Divididos",
-        "album": "Gol De Mujer",
-        "year": "1998",
-        "playlist": "Divididos",
-        "service": "Spotify"
-    },
-    {
-        "track_title": "Sobrio A Las Piñas/Quien Se Tomo Todo El Vino",
-        "artist": "Divididos",
-        "album": "Gol De Mujer",
-        "year": "1998",
-        "playlist": "Divididos",
-        "service": "Spotify"
-    },
-    {
-        "track_title": "Amor Japonés",
-        "artist": "Divididos",
-        "album": "Gol De Mujer",
-        "year": "1998",
-        "playlist": "Divididos",
-        "service": "Spotify"
-    },
-    {
-        "track_title": "Cabeza de Maceta",
-        "artist": "Divididos",
-        "album": "Gol De Mujer",
-        "year": "1998",
-        "playlist": "Divididos",
-        "service": "Spotify"
-    },
-    {
-        "track_title": "Zombie",
-        "artist": "Divididos",
-        "album": "Gol De Mujer",
-        "year": "1998",
-        "playlist": "Divididos",
-        "service": "Spotify"
-    },
-    {
-        "track_title": "El Fantasio",
-        "artist": "Divididos",
-        "album": "Gol De Mujer",
-        "year": "1998",
-        "playlist": "Divididos",
-        "service": "Spotify"
-    },
-    {
-        "track_title": "Sábado",
-        "artist": "Divididos",
-        "album": "Divididos",
-        "year": "1996",
-        "playlist": "Divididos",
-        "service": "Spotify"
-    },
-    {
-        "track_title": "Dame Un Limón",
-        "artist": "Divididos",
-        "album": "Divididos",
-        "year": "1996",
-        "playlist": "Divididos",
-        "service": "Spotify"
-    },
-    {
-        "track_title": "Que Tal?",
-        "artist": "Divididos",
-        "album": "Divididos",
-        "year": "1996",
         "playlist": "Divididos",
         "service": "Spotify"
     },
@@ -256,7 +24,71 @@
         "service": "Spotify"
     },
     {
+        "track_title": "Ala Delta",
+        "artist": "Divididos",
+        "album": "Acariciando Lo Aspero",
+        "year": "1991",
+        "playlist": "Divididos",
+        "service": "Spotify"
+    },
+    {
+        "track_title": "Sisters",
+        "artist": "Divididos",
+        "album": "Viveza Criolla",
+        "year": "2000",
+        "playlist": "Divididos",
+        "service": "Spotify"
+    },
+    {
+        "track_title": "Nene de Antes",
+        "artist": "Divididos",
+        "album": "Obras Cumbres",
+        "year": "2006",
+        "playlist": "Divididos",
+        "service": "Spotify"
+    },
+    {
+        "track_title": "¿Qué Ves?",
+        "artist": "Divididos",
+        "album": "La Era De La Boludez",
+        "year": "1993",
+        "playlist": "Divididos",
+        "service": "Spotify"
+    },
+    {
+        "track_title": "Pepe Lui",
+        "artist": "Divididos",
+        "album": "Sí o Sí - Diario del Rock Argentino - Divididos",
+        "year": "2008",
+        "playlist": "Divididos",
+        "service": "Spotify"
+    },
+    {
         "track_title": "El 38",
+        "artist": "Divididos",
+        "album": "Divididos",
+        "year": "1996",
+        "playlist": "Divididos",
+        "service": "Spotify"
+    },
+    {
+        "track_title": "Amapola del 66",
+        "artist": "Divididos",
+        "album": "Amapola del 66",
+        "year": "2010",
+        "playlist": "Divididos",
+        "service": "Spotify"
+    },
+    {
+        "track_title": "Dame Un Limón",
+        "artist": "Divididos",
+        "album": "Divididos",
+        "year": "1996",
+        "playlist": "Divididos",
+        "service": "Spotify"
+    },
+    {
+        "track_title": "Sábado",
         "artist": "Divididos",
         "album": "Divididos",
         "year": "1996",
@@ -272,55 +104,7 @@
         "service": "Spotify"
     },
     {
-        "track_title": "Tomando Mate En La Paz",
-        "artist": "Divididos",
-        "album": "Divididos",
-        "year": "1996",
-        "playlist": "Divididos",
-        "service": "Spotify"
-    },
-    {
-        "track_title": "15 - 5",
-        "artist": "Divididos",
-        "album": "Divididos",
-        "year": "1996",
-        "playlist": "Divididos",
-        "service": "Spotify"
-    },
-    {
-        "track_title": "Basta Fuerte",
-        "artist": "Divididos",
-        "album": "Otro Le Travaladna",
-        "year": "1995",
-        "playlist": "Divididos",
-        "service": "Spotify"
-    },
-    {
-        "track_title": "Salir A Asustar",
-        "artist": "Divididos",
-        "album": "La Era De La Boludez",
-        "year": "1993",
-        "playlist": "Divididos",
-        "service": "Spotify"
-    },
-    {
-        "track_title": "Salir A Comprar",
-        "artist": "Divididos",
-        "album": "La Era De La Boludez",
-        "year": "1993",
-        "playlist": "Divididos",
-        "service": "Spotify"
-    },
-    {
-        "track_title": "Cristófolo Cacarnu",
-        "artist": "Divididos",
-        "album": "La Era De La Boludez",
-        "year": "1993",
-        "playlist": "Divididos",
-        "service": "Spotify"
-    },
-    {
-        "track_title": "Indio, Dejá El Mezcal",
+        "track_title": "Paisano De Hurlingham",
         "artist": "Divididos",
         "album": "La Era De La Boludez",
         "year": "1993",

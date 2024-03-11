@@ -54,7 +54,7 @@ class SpotifyAPI:
         print()
         print(f'My Spotify playlists:\n')
         for playlist in playlists['items']:
-            print(f'* {playlist['name']} (id: {playlist["id"]})')
+            print(f'* {playlist["name"]} (id: {playlist["id"]})')
             tracks += playlist["tracks"]["total"]
 
         print()

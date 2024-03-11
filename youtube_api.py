@@ -1,4 +1,4 @@
-import os,pickle,json,time
+import os,pickle,json,time,csv
 from dotenv import load_dotenv
 from google_auth_oauthlib.flow import InstalledAppFlow
 from googleapiclient.discovery import build
@@ -79,7 +79,7 @@ class YoutubeAPI:
         print()
         print(f'My Youtube Music playlists:\n')
         for playlist in response['items']:
-            print(f'* {playlist['snippet']['title']} (id: {playlist['id']})')
+            print(f'* {playlist["snippet"]["title"]} (id: {playlist["id"]})')
             # Realiza una solicitud para obtener los detalles de la lista de reproducción
             playlist_id = playlist['id']
             playlist_details = youtube.playlistItems().list(
@@ -491,3 +491,44 @@ class YoutubeAPI:
                 time.sleep(2)  # Esperar 2 segundos entre lotes
 
             print("Migration completed")
+            
+            
+            
+            
+    # Obtiene información de una playlist de Youtube Music
+    def get_playlist_info(playlist_id, api_key):
+        youtube = build('youtube', 'v3', developerKey=api_key)
+        request = youtube.playlistItems().list(
+            part="snippet",
+            playlistId=playlist_id,
+            maxResults=100  # Esto limita a 50 resultados por solicitud, puedes ajustarlo según tus necesidades
+        )
+        response = request.execute()
+        return response
+            
+    # Exporta la información de una playlist de Youtube Music en formátos CSV
+    def get_playlist_csv(self,playlist_name):
+        data_csv = [['track_title','artist','album','year','playlist','service']]
+        playlist_id = self.get_playlist_id_by_name(playlist_name)
+        # Obtengo la informacion de la playlist de Youtube Music
+        playlist_data = self.get_playlist_info(playlist_id,api_key)
+        for item in playlist_data['items']:
+            track_title = item['snippet']['title']
+            artist = item['snippet']['artist']
+            album = item['snippet']['album']
+            year = item['snippet']['year']
+            playlist = item['snippet']['playlist']
+            service = 'YouTube Music'  # Esto es fijo ya que estamos obteniendo datos de YouTube Music
+            data_csv.append([track_title, artist, album, year, playlist, service])
+
+        file_path = os.path.join(self.create_download_folder('csv'), playlist_name + "_youtube.csv")
+
+        try:
+            with open(file_path, mode='w', newline='', encoding='utf-8') as file_csv:
+                escritor_csv = csv.writer(file_csv)
+                for row in data_csv:
+                    escritor_csv.writerow(row)
+
+            print(f"CSV file '{file_path}' successfully created")
+        except Exception as e:
+            print(f"Error creating the CSV file: {e}")
