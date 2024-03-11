@@ -1,11 +1,24 @@
-import sys,argparse
-from spotify_api import SpotifyAPI
-from youtube_api import YoutubeAPI
+import sys,argparse,subprocess
 
 def main():
+    # Módulos que se necesitan instalar
+    modules = ['spotipy', 'openpyxl',  'python-dotenv', 'google_auth_oauthlib', 'google-api-python-client']
+
+    # Instalar los modulos que no estén instalados en el sistema
+    for module in modules:
+        try:
+            # Detecta si el módulo está instalado en el sistema
+            __import__(module)
+        except ImportError:
+            print(f"Installing   {module}...")
+            subprocess.check_call([sys.executable, "-m", "pip", "install", module])
+    
+    from spotify_api import SpotifyAPI
+    from youtube_api import YoutubeAPI
+
     spotify_api = SpotifyAPI()
     youtube_api = YoutubeAPI() 
-    
+
     # Crear el parser
     parser = argparse.ArgumentParser(description='Gestión de playlists en Spotify y YouTube Music')
 
