@@ -496,8 +496,9 @@ class YoutubeAPI:
             
             
     # Obtiene información de una playlist de Youtube Music
-    def get_playlist_info(playlist_id, api_key):
-        youtube = build('youtube', 'v3', developerKey=api_key)
+    def get_playlist_info(self,playlist_id):
+        # Obtén el servicio de la API de YouTube
+        youtube = self.get_youtube_service()
         request = youtube.playlistItems().list(
             part="snippet",
             playlistId=playlist_id,
@@ -505,30 +506,33 @@ class YoutubeAPI:
         )
         response = request.execute()
         return response
-            
-    # Exporta la información de una playlist de Youtube Music en formátos CSV
-    def get_playlist_csv(self,playlist_name):
-        data_csv = [['track_title','artist','album','year','playlist','service']]
         playlist_id = self.get_playlist_id_by_name(playlist_name)
         # Obtengo la informacion de la playlist de Youtube Music
-        playlist_data = self.get_playlist_info(playlist_id,api_key)
+        playlist_data = self.get_playlist_info(playlist_id)
         for item in playlist_data['items']:
             track_title = item['snippet']['title']
-            artist = item['snippet']['artist']
-            album = item['snippet']['album']
-            year = item['snippet']['year']
-            playlist = item['snippet']['playlist']
-            service = 'YouTube Music'  # Esto es fijo ya que estamos obteniendo datos de YouTube Music
+            artist = ""  # Inicializamos el artista como una cadena vacía
+            album = item['snippet']['title']  # Podemos asignar el título de la pista al álbum por ahora
+            year = ""  # No hay información del año en la lista de reproducción
+            playlist = playlist_name
+            service = 'YouTube Music'
+
+            # Obtenemos información adicional sobre la pista para encontrar el artista
+            video_id = item['snippet']['resourceId']['videoId']
+            track_info = self.get_video_info(video_id)
+            if 'artist' in track_info:
+                artist = track_info['artist']
+
             data_csv.append([track_title, artist, album, year, playlist, service])
 
         file_path = os.path.join(self.create_download_folder('csv'), playlist_name + "_youtube.csv")
 
         try:
             with open(file_path, mode='w', newline='', encoding='utf-8') as file_csv:
-                escritor_csv = csv.writer(file_csv)
+                csv_writer = csv.writer(file_csv)
                 for row in data_csv:
-                    escritor_csv.writerow(row)
+                    csv_writer.writerow(row)
 
             print(f"CSV file '{file_path}' successfully created")
         except Exception as e:
-            print(f"Error creating the CSV file: {e}")
+            print(f"Error creating the CSV file: {e}")    

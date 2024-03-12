@@ -2,7 +2,7 @@ import sys,argparse,subprocess
 
 def main():
     # Módulos que se necesitan instalar
-    modules = ['spotipy', 'openpyxl',  'python-dotenv', 'google_auth_oauthlib', 'google-api-python-client']
+    modules = ['spotipy', 'tidal_api', 'openpyxl',  'python-dotenv', 'google_auth_oauthlib', 'google-api-python-client']
 
     # Instalar los modulos que no estén instalados en el sistema
     for module in modules:
@@ -82,6 +82,8 @@ def main():
             youtube_api.search_playlist_tracks(args.t)
         elif args.c:
             youtube_api.create_playlist(args.c)
+        elif args.csv:
+            youtube_api.get_playlist_csv(args.csv)
         else:
             print('Error con los argumentos')
     else:
