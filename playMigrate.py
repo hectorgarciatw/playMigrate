@@ -15,9 +15,11 @@ def main():
     
     from spotify_api import SpotifyAPI
     from youtube_api import YoutubeAPI
+    from tidal_api import TidalAPI
 
     spotify_api = SpotifyAPI()
     youtube_api = YoutubeAPI() 
+    tidal_api = TidalAPI() 
 
     # Crear el parser
     parser = argparse.ArgumentParser(description='Gestión de playlists en Spotify y YouTube Music')
@@ -86,6 +88,9 @@ def main():
             youtube_api.get_playlist_csv(args.csv)
         else:
             print('Error con los argumentos')
+    elif args.platform == 'youtube' and args.destination is None:
+        if args.l:
+            tidal_api.list_playlists()
     else:
         exit()
 
