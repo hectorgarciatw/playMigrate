@@ -1,5 +1,5 @@
 spotipy
-tidal_api
+tidalapi
 dotenv
 google-api-python-client
 openpyxl

@@ -2,7 +2,7 @@ import sys,argparse,subprocess
 
 def main():
     # Módulos que se necesitan instalar
-    modules = ['spotipy', 'tidal_api', 'openpyxl',  'python-dotenv', 'google_auth_oauthlib', 'google-api-python-client']
+    modules = ['spotipy', 'tidalapi', 'openpyxl',  'python-dotenv', 'google_auth_oauthlib', 'google-api-python-client']
 
     # Instalar los modulos que no estén instalados en el sistema
     for module in modules:
@@ -25,7 +25,7 @@ def main():
     parser = argparse.ArgumentParser(description='Gestión de playlists en Spotify y YouTube Music')
 
     # Agregar los argumentos
-    parser.add_argument('platform', choices=['spotify', 'youtube'], help='Plataforma a interactuar (spotify o youtube)')
+    parser.add_argument('platform', choices=['spotify', 'youtube','tidal'], help='Plataforma a interactuar (spotify o youtube)')
     parser.add_argument('destination', nargs='?', default=None, help='Servicio de destino de la playlist (opcional)')
     parser.add_argument('-l', action='store_true', help='Listar todas las playlists')
     parser.add_argument('-i', action='store_true', help='Mostrar información del usuario')
@@ -88,7 +88,7 @@ def main():
             youtube_api.get_playlist_csv(args.csv)
         else:
             print('Error con los argumentos')
-    elif args.platform == 'youtube' and args.destination is None:
+    elif args.platform == 'tidal' and args.destination is None:
         if args.l:
             tidal_api.list_playlists()
     else:
