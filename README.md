@@ -14,11 +14,6 @@ Aplicación de Python para administrar y migrar playlists entre diversos servici
 
 |     | Comando          | Acción                                        |
 | :-- | :--------------- | :-------------------------------------------- |
-| ⚙️  | `playMigrate.py youtube -l` | Lista todas las playlists de Youtube Music.  |
-| ⚙️  | `playMigrate.py youtube -i`          | Muestra información del usuario de Youtube Music. (Canciones y discos más escuchados, minutos reproducidos en la semana ...)      |
-| ⚙️  | `playMigrate.py youtube -u`        | Actualiza las credenciales del usuario de Youtube Music. |
-| ⚙️  | `playMigrate.py youtube -c playlist_name `        | Crea una nueva playlist de nombre 'playlist_name' en Youtube Music. |
-| ⚙️  | `playMigrate.py youtube -t playlist_name`        | Lista las pistas de la playlist 'playlist_name' de Youtube Music con información de interés. |
 | ⚙️  | `playMigrate.py spotify youtube -m playlist_name`        | Migra las pistas de la playlist 'playlist_name' del usuario de Spotify a Youtube Music. |
 | ⚙️  | `playMigrate.py spotify -l` | Lista todas las playlists de Spotify.  |
 | ⚙️  | `playMigrate.py spotify -ujson playlist_name` | Crea en Spotify una playlist con sus pistas desde un archivo JSON.  |
@@ -29,7 +24,14 @@ Aplicación de Python para administrar y migrar playlists entre diversos servici
 | ⚙️  | `playMigrate.py spotify -u`        | Actualiza las credenciales del usuario de Spotify. |
 | ⚙️  | `playMigrate.py spotify -c playlist_name`        | Crea una nueva playlist de nombre 'playlist_name' en Spotify. |
 | ⚙️  | `playMigrate.py spotify -t playlist_name`        | Lista las pistas de la playlist 'playlist_name' de Spotify con información de interés. |
+| ⚙️  | `playMigrate.py tidal -l` | Lista todas las playlists de Tidal.  |
 | ⚙️  | `playMigrate.py youtube spotify -m playlist_name`        | Migra las pistas de la playlist 'playlist_name' del usuario de Youtube Music a Spotify. |
+| ⚙️  | `playMigrate.py youtube -l` | Lista todas las playlists de Youtube Music.  |
+| ⚙️  | `playMigrate.py youtube -i`          | Muestra información del usuario de Youtube Music. (Canciones y discos más escuchados, minutos reproducidos en la semana ...)      |
+| ⚙️  | `playMigrate.py youtube -u`        | Actualiza las credenciales del usuario de Youtube Music. |
+| ⚙️  | `playMigrate.py youtube -c playlist_name `        | Crea una nueva playlist de nombre 'playlist_name' en Youtube Music. |
+| ⚙️  | `playMigrate.py youtube -t playlist_name`        | Lista las pistas de la playlist 'playlist_name' de Youtube Music con información de interés. |
+
 
 
 ## 💾 Licencia
