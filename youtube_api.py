@@ -4,6 +4,9 @@ from google_auth_oauthlib.flow import InstalledAppFlow
 from googleapiclient.discovery import build
 from googleapiclient.errors import HttpError
 
+# Funciones auxiliares
+from common_functions import create_download_folder
+
 class YoutubeAPI:
     # Define los alcances de la API de YouTube v3
     SCOPES = ['https://www.googleapis.com/auth/youtube.readonly', 'https://www.googleapis.com/auth/youtube']
@@ -525,7 +528,7 @@ class YoutubeAPI:
 
             data_csv.append([track_title, artist, album, year, playlist, service])
 
-        file_path = os.path.join(self.create_download_folder('csv'), playlist_name + "_youtube.csv")
+        file_path = os.path.join(create_download_folder(self,'csv'), playlist_name + "_youtube.csv")
 
         try:
             with open(file_path, mode='w', newline='', encoding='utf-8') as file_csv:

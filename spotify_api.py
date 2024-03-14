@@ -5,6 +5,9 @@ from dotenv import load_dotenv
 from youtube_api import YoutubeAPI
 from openpyxl import Workbook
 
+# Funciones auxiliares
+from common_functions import create_download_folder
+
 class SpotifyAPI:
     def __init__(self):
         # Carga de las variables de entorno desde el archivo .env
@@ -283,22 +286,7 @@ class SpotifyAPI:
         self.sp.playlist_add_items(playlist_id, track_uris)
         print("Pistas añadidas a la lista de reproducción con éxito.")
 
-    # Crea (en caso de no existir) el directorio de descargas de archivos CSV,JSON,PDF,XLSX y HTML
-    def create_download_folder(self,extension):
-        local_path = os.path.dirname(__file__)
-        sub_directories = ["downloads", extension]  # Lista de subdirectorios
-        folder_path = os.path.join(local_path, *sub_directories)
-
-        # Verificar si el directorio no existe antes de crearlo
-        if not os.path.exists(folder_path):
-            try:
-                os.makedirs(folder_path)
-                print(f"Folder '{folder_path}' created successfully")
-            except OSError as e:
-                raise OSError(f"Unable to create the directory '{folder_path}': {e}")
-        return folder_path
-
-    # Exporta la información de una playlist de Spotify en formátos CSV
+    # Exporta la información de una playlist de Spotify en formáto CSV
     def get_playlist_csv(self,playlist_name):
         data_csv = [['track_title','artist','album','year','playlist','service']]
         # Obtengo la informacion de la playlist de Spotify
@@ -310,7 +298,7 @@ class SpotifyAPI:
             year = cancion['album_release_date'][:4]  # Extrae sólo los primeros cuatro caracteres (el año)
             data_csv.append([track_title,artist,album,year,playlist_name,'Spotify'])
 
-        file_path = os.path.join(self.create_download_folder('csv'), playlist_name + "_spotify.csv")
+        file_path = os.path.join(create_download_folder(self,'csv'), playlist_name + "_spotify.csv")
 
         try:
             with open(file_path, mode='w', newline='', encoding='utf-8') as file_csv:
@@ -322,7 +310,7 @@ class SpotifyAPI:
         except Exception as e:
             print(f"Error creating the CSV file: {e}")
 
-    # Exporta la información de una playlist de Spotify en formátos JSON
+    # Exporta la información de una playlist de Spotify en formáto JSON
     def get_playlist_json(self,playlist_name):
         data_json = []
         playlist_data = self.get_playlist_data(playlist_name)
@@ -340,7 +328,7 @@ class SpotifyAPI:
         except Exception as e:
             print(f"Error creating the JSON file: {e}")
 
-    # Exporta la información de una playlist de Spotify en formátos XLSX
+    # Exporta la información de una playlist de Spotify en formáto XLSX
     def get_playlist_xlsx(self,playlist_name):
         data_xlsx = []
         playlist_data = self.get_playlist_data(playlist_name)

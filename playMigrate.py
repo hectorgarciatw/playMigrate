@@ -91,6 +91,8 @@ def main():
     elif args.platform == 'tidal' and args.destination is None:
         if args.l:
             tidal_api.list_playlists()
+        elif args.csv:
+            tidal_api.get_playlist_csv(args.csv)
     else:
         exit()
 
