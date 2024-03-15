@@ -75,7 +75,7 @@ class TidalAPI:
         return playlist_data
 
 
-    # Exporta la información de una playlist de Spotify en formáto CSV
+    # Exporta la información de una playlist de Tidal en formáto CSV
     def get_playlist_csv(self,playlist_name):
         data_csv = [['track_title','artist','album','year','playlist','service']]
         session = self.service_login()
@@ -84,7 +84,7 @@ class TidalAPI:
             track_title = track['track_name']
             artist = track['artist']
             album = track['album_name']
-            year = track['album_release_date']  # Extrae sólo los primeros cuatro caracteres (el año)
+            year = track['album_release_date']
             data_csv.append([track_title,artist,album,year,playlist_name,'Tidal'])
 
         file_path = os.path.join(create_download_folder(self,'csv'), playlist_name + "_tidal.csv")
@@ -98,4 +98,54 @@ class TidalAPI:
             print(f"CSV file '{file_path}' successfully created")
         except Exception as e:
             print(f"Error creating the CSV file: {e}")
+    
+    # Exporta la información de una playlist de Tidal en formáto JSON
+    def get_playlist_json(self,playlist_name):
+        data_json = []
+        session = self.service_login()
+        playlist_data = self.get_playlist_data(playlist_name)
+        for track in playlist_data:
+            track_title = track['track_name']
+            artist = track['artist']
+            album = track['album_name']
+            year = track['album_release_date']
+            data_json.append({'track_title':track_title,'artist':artist,'album':album,'year':year,'playlist':playlist_name,'service':'Tidal'})
+
+        file_path = os.path.join(create_download_folder(self,'json'), playlist_name + "_tidal.json")
+        try:
+            with open(file_path, "w", encoding="utf-8") as file:
+                json.dump(data_json, file, indent=4, ensure_ascii=False)
+                print(f"JSON file '{file_path}' successfully created")
+        except Exception as e:
+            print(f"Error creating the JSON file: {e}")
         
+    # Exporta la información de una playlist de Tidal en formáto XLSX
+    def get_playlist_xlsx(self,playlist_name):
+        data_xlsx = []
+        session = self.service_login()
+        playlist_data = self.get_playlist_data(playlist_name)
+        for track in playlist_data:
+            track_title = track['track_name']
+            artist = track['artist']
+            album = track['album_name']
+            year = track['album_release_date']
+            data_xlsx.append({'track_title':track_title,'artist':artist,'album':album,'year':year,'playlist':playlist_name,'service':'Tidal'})
+        # Crear un nuevo libro de trabajo de Excel
+        try:
+            wb = Workbook()
+            sheet = wb.active
+            sheet.title = playlist_name + ' tidal playlist info'
+
+            # Escribir encabezados
+            sheet.append(["Track title", "Artist", "Album", "Year","Playlist","Service"])
+
+            # Escribir datos de la playlist
+            for track in data_xlsx:
+                sheet.append([track["track_title"], track["artist"], track["album"],track["year"],track["playlist"],track["service"]])
+
+            # Guardar el libro de trabajo en un archivo Excel
+            file = os.path.join(create_download_folder(self,'xlsx'), playlist_name + "_tidal.xlsx")
+            wb.save(file)
+            print(f"XLSX file successfully created")
+        except Exception as e:
+            print(f"Error creating the Excel file: {e}")

@@ -93,6 +93,10 @@ def main():
             tidal_api.list_playlists()
         elif args.csv:
             tidal_api.get_playlist_csv(args.csv)
+        elif args.json:
+            tidal_api.get_playlist_json(args.json)
+        elif args.xlsx:
+            tidal_api.get_playlist_xlsx(args.xlsx)
     else:
         exit()
 
