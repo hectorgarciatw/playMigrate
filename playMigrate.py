@@ -11,7 +11,7 @@ def main():
             __import__(module)
         except ImportError:
             print(f"Installing   {module}...")
-            subprocess.check_call([sys.executable, "-m", "pip", "install", module])
+            subprocess.check_call([sys.executable, "-m", "pip", "install",  "--quiet", module])
     
     from spotify_api import SpotifyAPI
     from youtube_api import YoutubeAPI
@@ -97,6 +97,8 @@ def main():
             tidal_api.get_playlist_json(args.json)
         elif args.xlsx:
             tidal_api.get_playlist_xlsx(args.xlsx)
+        elif args.ujson:
+            tidal_api.upload_playlist_from_json(args.ujson)
     else:
         exit()
 

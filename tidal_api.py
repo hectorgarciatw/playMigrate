@@ -149,3 +149,35 @@ class TidalAPI:
             print(f"XLSX file successfully created")
         except Exception as e:
             print(f"Error creating the Excel file: {e}")
+
+    # Importa la información de una playlist de Tidal desde un archivo local en formáto JSON
+    def upload_playlist_from_json(self,playlist_name):
+        local_path = os.path.dirname(__file__)
+        sub_directories = ['downloads', 'json']  # Lista de subdirectorios
+        folder_path = os.path.join(local_path, *sub_directories)
+        json_file = os.path.join(folder_path,playlist_name + '_tidal.json')
+        try:
+            with open(json_file, 'r', encoding='utf-8') as file:
+                # Carga el contenido del archivo JSON en un diccionario
+                playlist_data = json.load(file)
+
+                session = self.service_login()
+
+                playlist_description = "A playlist with songs uploaded with playMigrate"
+                playlist = session.user.create_playlist(playlist_name, playlist_description)
+
+                # Agrega las canciones a la playlist
+                for track_info in playlist_data:
+                    # Busca la pista por nombre y artista
+                    query = f'{track_info["track_title"]} {track_info["artist"]}'
+                    tracks = session.search(query)
+                    #TO DO
+                    print(tracks.get('artists'))
+
+        
+        except FileNotFoundError:
+            print("The file was not found")
+        except json.decoder.JSONDecodeError:
+            print("The file does not have a valid JSON format")
+        except Exception as e:
+            print("An error occurred while trying to read the JSON file:", e)
