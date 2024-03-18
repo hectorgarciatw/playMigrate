@@ -28,7 +28,9 @@ Aplicación de Python para administrar y migrar playlists entre diversos servici
 | ⚙️  | `playMigrate.py tidal -ujson playlist_name` | Crea en Tidal una playlist con sus pistas desde un archivo JSON.  |
 | ⚙️  | `playMigrate.py tidal -ucsv playlist_name` | Crea en Tidal una playlist con sus pistas desde un archivo CSV.  |
 | ⚙️  | `playMigrate.py tidal -uxlsx playlist_name` | Crea en Tidal una playlist con sus pistas desde un archivo XLSX.  |
+| ⚙️  | `playMigrate.py tidal -json playlist_name` | Descarga información y contenido de la playlist en formáto JSON.  |
 | ⚙️  | `playMigrate.py tidal -csv playlist_name` | Descarga información y contenido de la playlist en formáto CSV.  |
+| ⚙️  | `playMigrate.py tidal -xlsx playlist_name` | Descarga información y contenido de la playlist en formáto XLSX.  |
 | ⚙️  | `playMigrate.py youtube spotify -m playlist_name`        | Migra las pistas de la playlist 'playlist_name' del usuario de Youtube Music a Spotify. |
 | ⚙️  | `playMigrate.py youtube -l` | Lista todas las playlists de Youtube Music.  |
 | ⚙️  | `playMigrate.py youtube -i`          | Muestra información del usuario de Youtube Music. (Canciones y discos más escuchados, minutos reproducidos en la semana ...)      |
