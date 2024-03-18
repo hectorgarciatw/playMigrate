@@ -6,6 +6,7 @@ Aplicación de Python para administrar y migrar playlists entre diversos servici
 
 - [**Python**](https://www.python.org/downloads/) - Lenguaje del script Python 3+.
 - [**Spotipy**](https://pypi.org/project/spotipy/) - Interacción con la API de Spotify.
+- - [**Tidalapi**](https://pypi.org/project/tidalapi/) - Interacción con la API de Tidal.
 - [**Google-api-python-client**](https://pypi.org/project/google-api-python-client/) - Interacción con la API de Google (Youtube API).
 - [**Dotenv**](https://pypi.org/project/python-dotenv/) - Manejo de variables de entornos.
 - - [**Openpyxl**]([https://pypi.org/project/python-dotenv/](https://pypi.org/project/openpyxl/)) - Manejo y creación de archivos XLSX.
