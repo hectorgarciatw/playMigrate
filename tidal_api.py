@@ -4,7 +4,7 @@ import tidalapi
 from spotipy.oauth2 import SpotifyOAuth
 from dotenv import load_dotenv
 from youtube_api import YoutubeAPI
-from openpyxl import Workbook
+import openpyxl
 
 # Funciones auxiliares
 from common_functions import create_download_folder
@@ -185,3 +185,75 @@ class TidalAPI:
             print("The file does not have a valid JSON format")
         except Exception as e:
             print("An error occurred while trying to read the JSON file:", e)
+        
+    # Importa la información de una playlist de Tidal desde un archivo local en formáto CSV
+    def upload_playlist_from_csv(self,playlist_name):
+        local_path = os.path.dirname(__file__)
+        sub_directories = ['downloads', 'csv']  # Lista de subdirectorios
+        folder_path = os.path.join(local_path, *sub_directories)
+        csv_file = os.path.join(folder_path, playlist_name + '_tidal.csv')
+    
+        try:
+            with open(csv_file, 'r', encoding='utf-8') as file:
+                # Lee el archivo CSV
+                csv_reader = csv.DictReader(file)
+                session = self.service_login()
+                playlist_description = "A playlist with songs uploaded with playMigrate"
+                playlist = session.user.create_playlist(playlist_name, playlist_description)
+
+                track_ids = []
+
+                # Lee cada fila del archivo CSV
+                for row in csv_reader:
+                    track_title = row['track_title']
+                    artist = row['artist']
+                    print(f'{track_title} {artist}')
+                    # Busca la pista por nombre y artista
+                    query = f'{track_title} {artist}'
+                    tracks = session.search(query)
+                    # Agrega el id de la pista para agregar más tarde a la playlist
+                    track_ids.append(tracks['tracks'][0].id)
+                
+                playlist.add(track_ids)
+                print('Tidal playlist created successfully!')
+        
+        except FileNotFoundError:
+            print("The file was not found")
+        except Exception as e:
+            print("An error occurred while trying to read the CSV file:", e)
+
+    # Importa la información de una playlist de Tidal desde un archivo local en formáto XLSX
+    def upload_playlist_from_xlsx(self,playlist_name):
+        local_path = os.path.dirname(__file__)
+        sub_directories = ['downloads', 'xlsx']  # Lista de subdirectorios
+        folder_path = os.path.join(local_path, *sub_directories)
+        xlsx_file = os.path.join(folder_path, playlist_name + '_tidal.xlsx')
+    
+        try:
+            # Abre el archivo xlsx
+            workbook = openpyxl.load_workbook(xlsx_file)
+            sheet = workbook.active
+
+            session = self.service_login()
+            playlist_description = "A playlist with songs uploaded with playMigrate"
+            playlist = session.user.create_playlist(playlist_name, playlist_description)
+            track_ids = []
+
+            # Itera sobre cada fila en la hoja de cálculo
+            for row in sheet.iter_rows(values_only=True):
+                track_title, artist = row[0], row[1]
+                print(f'{track_title} {artist}')
+                # Busca la pista por nombre y artista
+                query = f'{track_title} {artist}'
+                tracks = session.search(query)
+            
+                # Agrega el id de la pista para agregar más tarde a la playlist
+                track_ids.append(tracks['tracks'][0].id)
+            
+            playlist.add(track_ids)
+            print('Tidal playlist created successfully!')
+        
+        except FileNotFoundError:
+            print("The file was not found")
+        except Exception as e:
+            print("An error occurred while trying to read the XLSX file:", e)
