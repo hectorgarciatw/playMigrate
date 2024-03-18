@@ -391,7 +391,7 @@ class SpotifyAPI:
                         track_uris.append(track_uri)
 
                 self.sp.playlist_add_items(playlist['id'], track_uris)
-                print('Spotify playlist created successfully with playMigrate!')
+                print('Spotify playlist created successfully!')
         
         except FileNotFoundError:
             print("The file was not found")

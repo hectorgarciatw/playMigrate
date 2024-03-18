@@ -166,14 +166,18 @@ class TidalAPI:
                 playlist_description = "A playlist with songs uploaded with playMigrate"
                 playlist = session.user.create_playlist(playlist_name, playlist_description)
 
+                track_ids = []
+
                 # Agrega las canciones a la playlist
                 for track_info in playlist_data:
+                    print(f'{track_info["track_title"]} {track_info["artist"]}')
                     # Busca la pista por nombre y artista
                     query = f'{track_info["track_title"]} {track_info["artist"]}'
                     tracks = session.search(query)
-                    #TO DO
-                    print(tracks.get('artists'))
-
+                    # Agrego el id de la pista para agregar mas tarde a la playlist
+                    track_ids.append(tracks['tracks'][0].id)
+            playlist.add(track_ids)
+            print('Tidal playlist created successfully!')
         
         except FileNotFoundError:
             print("The file was not found")
