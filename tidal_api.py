@@ -132,7 +132,7 @@ class TidalAPI:
             data_xlsx.append({'track_title':track_title,'artist':artist,'album':album,'year':year,'playlist':playlist_name,'service':'Tidal'})
         # Crear un nuevo libro de trabajo de Excel
         try:
-            wb = Workbook()
+            wb = openpyxl.Workbook()
             sheet = wb.active
             sheet.title = playlist_name + ' tidal playlist info'
 

@@ -73,6 +73,10 @@ def main():
             spotify_api.get_playlist_xlsx(args.xlsx)
         elif args.ujson:
             spotify_api.upload_playlist_from_json(args.ujson)
+        elif args.ucsv:
+            spotify_api.upload_playlist_from_csv(args.ucsv)
+        elif args.uxlsx:
+            spotify_api.upload_playlist_from_xlsx(args.uxlsx)
         else:
             print('Error con los argumentos')
     elif args.platform == 'youtube' and args.destination is None:

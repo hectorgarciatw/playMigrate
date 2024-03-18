@@ -4,6 +4,7 @@ from spotipy.oauth2 import SpotifyOAuth
 from dotenv import load_dotenv
 from youtube_api import YoutubeAPI
 from openpyxl import Workbook
+import openpyxl
 
 # Funciones auxiliares
 from common_functions import create_download_folder
@@ -341,7 +342,7 @@ class SpotifyAPI:
         
         # Crear un nuevo libro de trabajo de Excel
         try:
-            wb = Workbook()
+            wb = openpyxl.Workbook()
             sheet = wb.active
             sheet.title = playlist_name + ' spotify playlist info'
 
@@ -399,3 +400,87 @@ class SpotifyAPI:
             print("The file does not have a valid JSON format")
         except Exception as e:
             print("An error occurred while trying to read the JSON file:", e)
+
+    # Importa la información de una playlist de Spotify desde un archivo local en formáto CSV
+    def upload_playlist_from_csv(self,playlist_name):
+        local_path = os.path.dirname(__file__)
+        sub_directories = ['downloads', 'csv']  # Lista de subdirectorios
+        folder_path = os.path.join(local_path, *sub_directories)
+        csv_file = os.path.join(folder_path, playlist_name + '_spotify.csv')
+    
+        try:
+            with open(csv_file, 'r', encoding='utf-8') as file:
+                csv_reader = csv.DictReader(file)
+            
+                # En caso de no contar con credenciales dumpeadas las creo
+                if not self.load_credentials():
+                    # Realiza el login
+                    self.service_login()
+
+                playlist_description = "A playlist with songs uploaded with playMigrate"
+                user_id = self.sp.current_user()["id"]
+                playlist = self.sp.user_playlist_create(user_id, playlist_name, public=True, description=playlist_description)
+
+                track_uris = []
+
+                # Agrega las canciones a la playlist
+                for row in csv_reader:
+                    track_title = row['track_title']
+                    artist = row['artist']
+                
+                    results = self.sp.search(q=f"{track_title} {artist}", type="track")
+                    if results['tracks']['items']:
+                        track_uri = results['tracks']['items'][0]['uri']
+                        track_name = results['tracks']['items'][0]['name']
+                        artist_name = results['tracks']['items'][0]['artists'][0]['name']
+                        print(f"* Adding track: '{track_name}' of '{artist_name}'")
+                        track_uris.append(track_uri)
+
+                self.sp.playlist_add_items(playlist['id'], track_uris)
+                print('Spotify playlist created successfully!')
+        
+        except FileNotFoundError:
+            print("The file was not found")
+        except Exception as e:
+            print("An error occurred while trying to read the CSV file:", e)
+
+    # Importa la información de una playlist de Spotify desde un archivo local en formáto XLSX
+    def upload_playlist_from_xlsx(self,playlist_name):
+        local_path = os.path.dirname(__file__)
+        sub_directories = ['downloads', 'xlsx']  # Lista de subdirectorios
+        folder_path = os.path.join(local_path, *sub_directories)
+        xlsx_file = os.path.join(folder_path, playlist_name + '_spotify.xlsx')
+    
+        try:
+            workbook = openpyxl.load_workbook(xlsx_file)
+            sheet = workbook.active
+        
+            # En caso de no contar con credenciales dumpeadas las creo
+            if not self.load_credentials():
+                # Realiza el login
+                self.service_login()
+
+            playlist_description = "A playlist with songs uploaded with playMigrate"
+            user_id = self.sp.current_user()["id"]
+            playlist = self.sp.user_playlist_create(user_id, playlist_name, public=True, description=playlist_description)
+
+            track_uris = []
+
+            # Agrega las canciones a la playlist
+            for row in sheet.iter_rows(values_only=True):
+                track_title, artist = row[0], row[1]
+                results = self.sp.search(q=f"{track_title} {artist}", type="track")
+                if results['tracks']['items']:
+                    track_uri = results['tracks']['items'][0]['uri']
+                    track_name = results['tracks']['items'][0]['name']
+                    artist_name = results['tracks']['items'][0]['artists'][0]['name']
+                    print(f"* Adding track: '{track_name}' of '{artist_name}'")
+                    track_uris.append(track_uri)
+
+            self.sp.playlist_add_items(playlist['id'], track_uris)
+            print('Spotify playlist created successfully!')
+        
+        except FileNotFoundError:
+            print("The file was not found")
+        except Exception as e:
+            print("An error occurred while trying to read the XLSX file:", e)
