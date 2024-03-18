@@ -1,6 +1,6 @@
 # playMigrate
 
-Aplicación de Python para administrar y migrar playlists entre diversos servicios de streaming de audio (Spotify, Tidal, Youtube Music ...)
+PlayMigrate es una aplicación de consola escrita en Python diseñada para administrar música en los principales servicios de streaming de audio, incluyendo Spotify, Tidal, Apple Music, Amazon Music y Youtube Music. Esta herramienta proporciona una serie de comandos para realizar diversas acciones, como migrar playlists entre servicios, listar playlists, crear nuevas playlists, descargar información de playlists en diferentes formatos (JSON, CSV, XLSX), mostrar información del usuario, actualizar credenciales entre muchas opciones más.
 
 ## 💻 Lenguaje y Módulos de Terceros
 
