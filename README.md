@@ -18,6 +18,8 @@ PlayMigrate es una aplicación de consola escrita en Python diseñada para admin
 | ⚙️  | `playMigrate.py spotify youtube -m playlist_name`        | Migra las pistas de la playlist 'playlist_name' del usuario de Spotify a Youtube Music. |
 | ⚙️  | `playMigrate.py spotify -l` | Lista todas las playlists de Spotify.  |
 | ⚙️  | `playMigrate.py spotify -ujson playlist_name` | Crea en Spotify una playlist con sus pistas desde un archivo JSON.  |
+| ⚙️  | `playMigrate.py spotify -ucsv playlist_name` | Crea en Spotify una playlist con sus pistas desde un archivo CSV.  |
+| ⚙️  | `playMigrate.py spotify -uxlsx playlist_name` | Crea en Spotify una playlist con sus pistas desde un archivo XLSX.  |
 | ⚙️  | `playMigrate.py spotify -csv playlist_name` | Descarga información y contenido de la playlist en formáto CSV.  |
 | ⚙️  | `playMigrate.py spotify -json playlist_name` | Descarga información y contenido de la playlist en formáto JSON.  |
 | ⚙️  | `playMigrate.py spotify -xlsx playlist_name` | Descarga información y contenido de la playlist en formáto XLSX.  |
