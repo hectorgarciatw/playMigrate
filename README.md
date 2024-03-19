@@ -34,6 +34,9 @@ PlayMigrate es una aplicación de consola escrita en Python diseñada para admin
 | ⚙️  | `playMigrate.py tidal -json playlist_name` | Descarga información y contenido de la playlist en formáto JSON.  |
 | ⚙️  | `playMigrate.py tidal -csv playlist_name` | Descarga información y contenido de la playlist en formáto CSV.  |
 | ⚙️  | `playMigrate.py tidal -xlsx playlist_name` | Descarga información y contenido de la playlist en formáto XLSX.  |
+| ⚙️  | `playMigrate.py tidal -t playlist_name`        | Lista las pistas de la playlist 'playlist_name' de Tidal con información de interés. |
+| ⚙️  | `playMigrate.py tidal -c playlist_name`        | Crea una nueva playlist de nombre 'playlist_name' en Tidal. |
+| ⚙️  | `playMigrate.py tidal -i`          | Muestra información del usuario de Tidal. (Canciones y discos más escuchados, minutos reproducidos en la semana ...)      |
 | ⚙️  | `playMigrate.py youtube spotify -m playlist_name`        | Migra las pistas de la playlist 'playlist_name' del usuario de Youtube Music a Spotify. |
 | ⚙️  | `playMigrate.py youtube -l` | Lista todas las playlists de Youtube Music.  |
 | ⚙️  | `playMigrate.py youtube -i`          | Muestra información del usuario de Youtube Music. (Canciones y discos más escuchados, minutos reproducidos en la semana ...)      |
