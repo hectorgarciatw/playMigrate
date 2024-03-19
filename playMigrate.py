@@ -109,6 +109,8 @@ def main():
             tidal_api.upload_playlist_from_csv(args.ucsv)
         elif args.uxlsx:
             tidal_api.upload_playlist_from_xlsx(args.uxlsx)
+        elif args.i:
+            tidal_api.user_info()
     else:
         exit()
 

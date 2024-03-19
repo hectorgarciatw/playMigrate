@@ -257,3 +257,24 @@ class TidalAPI:
             print("The file was not found")
         except Exception as e:
             print("An error occurred while trying to read the XLSX file:", e)
+
+    # Retorna información del usuario de Tidal
+    def user_info(self):
+        session = self.service_login()
+        user_info = session.user
+        print((' ' + user_info.first_name + ' Tidal account information: ').center(100,'*'))
+        
+        print("Username:", user_info.first_name)
+        print("Surname:", user_info.last_name)
+        print("User ID:", user_info.id)
+        print("Email:", user_info.email)
+        
+        print(('Favorites tracks: ').center(100,'*'))
+        tracks = user_info.favorites.tracks()
+        for track in tracks:
+            print('* ' + track.name, "-", track.artist.name)
+
+        print(('Favorites albums: ').center(100,'*'))
+        albums = user_info.favorites.albums()
+        for album in albums:
+            print('* ' + album.name, "-", album.artist.name)
