@@ -278,3 +278,26 @@ class TidalAPI:
         albums = user_info.favorites.albums()
         for album in albums:
             print('* ' + album.name, "-", album.artist.name)
+
+    # Creando una playlist de Tidal desde cero
+    def create_playlist(self, playlist_name):
+        try:
+            session = self.service_login()
+            playlist_description = "A playlist created with playMigrate"
+            playlist = session.user.create_playlist(playlist_name, playlist_description)
+            print(f'Playlist created successfully with ID: {playlist.id}')
+        except Exception as e:
+            print(f'Error while trying to create a playlist: {str(e)}')
+    
+    # Lista los tracks de una playlist en particular de Tidal
+    def search_playlist_tracks(self, playlist_name):
+        session = self.service_login()
+        playlist_data = self.get_playlist_data(playlist_name)
+        print()
+        print(f'Playlist \"{playlist_name}\" with {len(playlist_data)} tracks found: \n')
+        for track in playlist_data:
+            track_title = track['track_name']
+            artist = track['artist']
+            album = track['album_name']
+            year = track['album_release_date']
+            print(f'* {track_title} by {artist} from the album  {album} released on {year}')

@@ -111,6 +111,10 @@ def main():
             tidal_api.upload_playlist_from_xlsx(args.uxlsx)
         elif args.i:
             tidal_api.user_info()
+        elif args.c:
+            tidal_api.create_playlist(args.c)
+        elif args.t:
+            tidal_api.search_playlist_tracks(args.t)
     else:
         exit()
 
