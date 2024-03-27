@@ -6,6 +6,8 @@ from dotenv import load_dotenv
 from youtube_api import YoutubeAPI
 import openpyxl
 
+from spotify_api import SpotifyAPI
+
 # Funciones auxiliares
 from common_functions import create_download_folder
 
@@ -286,6 +288,7 @@ class TidalAPI:
             playlist_description = "A playlist created with playMigrate"
             playlist = session.user.create_playlist(playlist_name, playlist_description)
             print(f'Playlist created successfully with ID: {playlist.id}')
+            return playlist
         except Exception as e:
             print(f'Error while trying to create a playlist: {str(e)}')
     
@@ -301,3 +304,37 @@ class TidalAPI:
             album = track['album_name']
             year = track['album_release_date']
             print(f'* {track_title} by {artist} from the album  {album} released on {year}')
+
+    # Migración de una playlist de Spotify a Tidal
+    def migrate_playlist_from_sp(self, playlist_name):
+        spotify_api = SpotifyAPI()
+        sp_playlist_data = spotify_api.get_playlist_data(playlist_name)
+        session = self.service_login()
+        # Creamos la playlist vacia
+        playlist = self.create_playlist(playlist_name)
+        track_ids = []
+        # Agrega las canciones a la playlist
+        for track_info in sp_playlist_data['tracks']:
+            track_title = track_info['track_name']
+            artist = track_info['artist']
+            # Busca la pista por nombre y artista
+            query = f'{track_title} {artist}'
+            try:
+                tracks = session.search(query)
+                if tracks and 'tracks' in tracks and tracks['tracks']:
+                    # Agrego el id de la pista para agregar mas tarde a la playlist
+                    track_ids.append(tracks['tracks'][0].id)
+                else:
+                    print(f"The track '{track_title}' of '{artist}' was not found in Tidal")
+            except Exception as e:
+                print(f"Error occurred while searching for '{track_title}' of '{artist}' in Tidal: {e}")
+        # Añadir las pistas encontradas a la playlist en Tidal
+        try:
+            playlist.add(track_ids)
+            print('Tidal playlist created successfully!')
+        except Exception as e:
+            print(f"Error occurred while adding tracks to Tidal playlist: {e}")
+
+
+
+

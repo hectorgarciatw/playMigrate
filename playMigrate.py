@@ -22,10 +22,10 @@ def main():
     tidal_api = TidalAPI() 
 
     # Crear el parser
-    parser = argparse.ArgumentParser(description='Gestión de playlists en Spotify y YouTube Music')
+    parser = argparse.ArgumentParser(description='Gestión de playlists en Spotify, Tidal, Apple Music & YouTube Music')
 
     # Agregar los argumentos
-    parser.add_argument('platform', choices=['spotify', 'youtube','tidal'], help='Plataforma a interactuar (spotify o youtube)')
+    parser.add_argument('platform', choices=['spotify', 'youtube','tidal'], help='Plataforma a interactuar (spotify,tidal o youtube)')
     parser.add_argument('destination', nargs='?', default=None, help='Servicio de destino de la playlist (opcional)')
     parser.add_argument('-l', action='store_true', help='Listar todas las playlists')
     parser.add_argument('-i', action='store_true', help='Mostrar información del usuario')
@@ -46,6 +46,12 @@ def main():
     if args.platform == 'spotify' and args.destination == 'youtube':
         if args.m:
             youtube_api.migrate_playlist_from_sp(args.m)
+        else:
+            print('Error: Falta el nombre de la playlist a migrar')
+
+    if args.platform == 'spotify' and args.destination == 'tidal':
+        if args.m:
+            tidal_api.migrate_playlist_from_sp(args.m)
         else:
             print('Error: Falta el nombre de la playlist a migrar')
             
