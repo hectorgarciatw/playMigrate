@@ -6,8 +6,6 @@ from dotenv import load_dotenv
 from youtube_api import YoutubeAPI
 import openpyxl
 
-from spotify_api import SpotifyAPI
-
 # Funciones auxiliares
 from common_functions import create_download_folder
 
@@ -306,8 +304,7 @@ class TidalAPI:
             print(f'* {track_title} by {artist} from the album  {album} released on {year}')
 
     # Migración de una playlist de Spotify a Tidal
-    def migrate_playlist_from_sp(self, playlist_name):
-        spotify_api = SpotifyAPI()
+    def migrate_playlist_from_sp(self, spotify_api, playlist_name):
         sp_playlist_data = spotify_api.get_playlist_data(playlist_name)
         session = self.service_login()
         # Creamos la playlist vacia

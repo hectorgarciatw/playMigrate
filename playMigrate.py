@@ -1,4 +1,7 @@
 import sys,argparse,subprocess
+from spotify_api import SpotifyAPI
+from youtube_api import YoutubeAPI
+from tidal_api import TidalAPI
 
 def main():
     # Módulos que se necesitan instalar
@@ -13,9 +16,6 @@ def main():
             print(f"Installing   {module}...")
             subprocess.check_call([sys.executable, "-m", "pip", "install",  "--quiet", module])
     
-    from spotify_api import SpotifyAPI
-    from youtube_api import YoutubeAPI
-    from tidal_api import TidalAPI
 
     spotify_api = SpotifyAPI()
     youtube_api = YoutubeAPI() 
@@ -45,19 +45,24 @@ def main():
 
     if args.platform == 'spotify' and args.destination == 'youtube':
         if args.m:
-            youtube_api.migrate_playlist_from_sp(args.m)
+            youtube_api.migrate_playlist_from_sp(spotify_api, args.m)
         else:
             print('Error: Falta el nombre de la playlist a migrar')
 
     if args.platform == 'spotify' and args.destination == 'tidal':
         if args.m:
-            tidal_api.migrate_playlist_from_sp(args.m)
+            tidal_api.migrate_playlist_from_sp(spotify_api, args.m)
         else:
             print('Error: Falta el nombre de la playlist a migrar')
             
     if args.platform == 'youtube' and args.destination == 'spotify':
         if args.m:
-            spotify_api.migrate_playlist_from_yt(args.m)
+            spotify_api.migrate_playlist_from_yt(youtube_api, args.m)
+        else:
+            print('Error: Falta el nombre de la playlist a migrar')
+    if args.platform == 'tidal' and args.destination == 'spotify':
+        if args.m:
+            spotify_api.migrate_playlist_from_tidal(tidal_api, args.m)
         else:
             print('Error: Falta el nombre de la playlist a migrar')
 

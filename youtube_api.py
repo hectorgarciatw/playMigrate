@@ -240,12 +240,9 @@ class YoutubeAPI:
         print("Playlist '{}' created successfully with ID: {}".format(playlist_name, response["id"]))
 
 
-    def migrate_playlist_from_sp(self, playlist_name):
+    def migrate_playlist_from_sp(self, spotify_api, playlist_name):
         # Get the YouTube service
         youtube = self.get_youtube_service()
-
-        spotify_api = SpotifyAPI()
-
         sp_playlist_data = spotify_api.get_playlist_data(playlist_name)
 
         try:
@@ -326,9 +323,6 @@ class YoutubeAPI:
 
             # Get the YouTube service
             youtube = self.get_youtube_service()
-
-            spotify_api = SpotifyAPI()
-
             sp_playlist_data = spotify_api.get_playlist_data(playlist_name)
 
             try:
@@ -409,9 +403,6 @@ class YoutubeAPI:
 
             # Get the YouTube service
             youtube = self.get_youtube_service()
-
-            spotify_api = SpotifyAPI()
-
             sp_playlist_data = spotify_api.get_playlist_data(playlist_name)
             # Creamos una playlist vacia
             request = youtube.playlists().insert(
@@ -424,7 +415,7 @@ class YoutubeAPI:
             )
             response = request.execute()
             playlist_id = response["id"]
-        
+            batch_size = 50
             # Agrupar las pistas de Spotify en lotes más pequeños
             tracks_batches = [sp_playlist_data['tracks'][i:i + batch_size] for i in range(0, len(sp_playlist_data['tracks']), batch_size)]
 

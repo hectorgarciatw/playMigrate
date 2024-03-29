@@ -3,6 +3,7 @@ import spotipy
 from spotipy.oauth2 import SpotifyOAuth
 from dotenv import load_dotenv
 from youtube_api import YoutubeAPI
+from tidal_api import TidalAPI
 from openpyxl import Workbook
 import openpyxl
 
@@ -235,9 +236,8 @@ class SpotifyAPI:
             print("Error creating the playlist:", e)
 
     # Migración de una playlist de Youtube Music a Spotify
-    def migrate_playlist_from_yt(self, playlist_name):
+    def migrate_playlist_from_yt(self, youtube_api, playlist_name):
         print('Starting the playlist migration process...')
-        youtube_api = YoutubeAPI()
         tracks_to_migrate = []
         # Avisamos al usuario que la playlist que se quiere migrar no existe en Youtube Music
         if youtube_api.get_playlist_id_by_name(playlist_name) is None:
@@ -484,3 +484,51 @@ class SpotifyAPI:
             print("The file was not found")
         except Exception as e:
             print("An error occurred while trying to read the XLSX file:", e)
+
+    # Migración de una playlist de Tidal a Spotify
+    def migrate_playlist_from_tidal(self, tidal_api, playlist_name):
+        print('Starting the playlist migration process...')
+        tracks_to_migrate = []
+
+        session = tidal_api.service_login()
+        playlist_data = tidal_api.get_playlist_data(playlist_name)
+
+        for track in playlist_data:
+            artist = track['artist']
+            if artist is not None:
+                print(f'Quiero añadir un tema de {artist} con el nombre de track {track["track_name"]}')
+                tracks_to_migrate.append({'track_name': track['track_name'], 'artist': artist})
+            else:
+                print('An artist for a track in the playlist could not be found')
+
+        # Obtiene la información del perfil del usuario
+        profile_info = self.sp.me()
+
+        # Extrae el nombre de usuario (ID de usuario) de la cuenta de Spotify
+        username = profile_info['id']
+
+        try:
+            # Crear una nueva lista de reproducción en Spotify con el mismo nombre
+            playlist = self.sp.user_playlist_create(user=username, name=playlist_name, public=True)
+            playlist_id = playlist['id']
+        except spotipy.SpotifyException as e:
+            print("Error al crear la playlist:", e)
+
+        # Lista para almacenar los URIs de las pistas
+        track_uris = []
+
+        # Agregar las pistas de la lista de reproducción de YouTube Music a la lista de reproducción de Spotify
+        for track in tracks_to_migrate:
+            # Realizar la búsqueda de la pista
+            result = self.sp.search(q=f"track:{track['track_name']} artist:{track['artist']}", limit=1)
+    
+            # Obtener el URI de la primera pista encontrada (si existe)
+            if result['tracks']['items']:
+                track_uri = result['tracks']['items'][0]['uri']
+                track_uris.append(track_uri)
+            else:
+                print(f"The track could not be found '{track['track_name']}' of '{track['artist']}' in Spotify.")
+
+        # Añadir las pistas a la lista de reproducción
+        self.sp.playlist_add_items(playlist_id, track_uris)
+        print("Pistas añadidas a la lista de reproducción con éxito.")
