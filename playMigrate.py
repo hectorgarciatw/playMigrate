@@ -54,7 +54,13 @@ def main():
             tidal_api.migrate_playlist_from_sp(spotify_api, args.m)
         else:
             print('Error: Falta el nombre de la playlist a migrar')
-            
+    
+    if args.platform == 'youtube' and args.destination == 'tidal':
+        if args.m:
+            tidal_api.migrate_playlist_from_yt(youtube_api, args.m)
+        else:
+            print('Error: Falta el nombre de la playlist a migrar')
+
     if args.platform == 'youtube' and args.destination == 'spotify':
         if args.m:
             spotify_api.migrate_playlist_from_yt(youtube_api, args.m)

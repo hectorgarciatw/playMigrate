@@ -1,4 +1,5 @@
 import os,pickle,pprint,sys,csv,json
+import youtube_dl
 import spotipy
 import tidalapi
 from spotipy.oauth2 import SpotifyOAuth
@@ -332,6 +333,64 @@ class TidalAPI:
         except Exception as e:
             print(f"Error occurred while adding tracks to Tidal playlist: {e}")
 
+    # Migración de una playlist de Youtube Music a Tidal
+    def migrate_playlist_from_yt(self, youtube_api, playlist_name):
+        print('Starting the playlist migration process...')
+        session = self.service_login()
+        # Creamos la playlist vacia
+        playlist = self.create_playlist(playlist_name)
+        track_ids = []
+        tracks_to_migrate = []
+        added_tracks = []
+        # Avisamos al usuario que la playlist que se quiere migrar no existe en Youtube Music
+        if youtube_api.get_playlist_id_by_name(playlist_name) is None:
+            print(f'The entered playlist "{playlist_name}" does not exist')
+            sys.exit()
+
+        # Obtener la info de las pistas de la lista de reproducción de YouTube Music
+        tracks_info = youtube_api.get_playlist_tracks(playlist_name)
+        # Agrega las canciones a la playlist
+        for track in tracks_info:
+            track_id = track['track_id']
+            try:
+                with youtube_dl.YoutubeDL({}) as ydl:
+                    video_info = ydl.extract_info(f"https://www.youtube.com/watch?v={track['track_id']}", download=False)
+                # Extraer el nombre del artista y el título del álbum de la información del video
+                artist = video_info.get('artist')
+                track_title = video_info.get('title')
+                year = video_info.get('release_year')  # Obtener el año de lanzamiento
+                genre = video_info.get('genre')  # Obtener el género
+
+            except youtube_dl.utils.DownloadError as e:
+                print(f'Error processing the video {track["track_id"]}')
+                print('Continuing with the next video...')
+                print()
+                continue
+
+            except Exception as e:
+                print(f'An unexpected error occurred')
+                print('Continuing with the next video...')
+                print()
+                continue
+
+            # Busca la pista por nombre y artista
+            query = f'{track_title} {artist} {year} {genre}'
+
+            try:
+                tracks = session.search(query)
+                if tracks and 'tracks' in tracks and tracks['tracks']:
+                    # Agrego el id de la pista para agregar mas tarde a la playlist
+                    track_ids.append(tracks['tracks'][0].id)
+                else:
+                    print(f"The track '{track_title}' of '{artist}' was not found in Tidal")
+            except Exception as e:
+                print(f"Error occurred while searching for '{track_title}' of '{artist}' in Tidal")
+        # Añadir las pistas encontradas a la playlist en Tidal
+        try:
+            playlist.add(track_ids)
+            print('Tidal playlist created successfully!')
+        except Exception as e:
+            print(f"Error occurred while adding tracks to Tidal playlist: {e}")
 
 
 
