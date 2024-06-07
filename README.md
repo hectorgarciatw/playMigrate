@@ -1,6 +1,43 @@
-# playMigrate
+<div align="center">
 
-PlayMigrate es una aplicación de consola escrita en Python diseñada para administrar música en los principales servicios de streaming de audio, incluyendo Spotify, Tidal, Apple Music, Amazon Music y Youtube Music. Esta herramienta proporciona una serie de comandos para realizar diversas acciones, como migrar playlists entre servicios, listar playlists, crear nuevas playlists, descargar información de playlists en diferentes formatos (JSON, CSV, XLSX), mostrar información del usuario, actualizar credenciales entre muchas opciones más.
+  <img src="assets/logov2.jpg" alt="logo" width="200" height="auto" />
+  <h1>playMigrate</h1>
+  
+  <p>
+    🎵 PlayMigrate es una aplicación de consola escrita en Python diseñada para administrar música en los principales servicios de streaming de audio, incluyendo Spotify, Tidal, Apple Music, Amazon Music y Youtube Music. Esta herramienta proporciona una serie de comandos para realizar diversas acciones, como migrar playlists entre servicios, listar playlists, crear nuevas playlists, descargar información de playlists en diferentes formatos (JSON, CSV, XLSX), mostrar información del usuario, actualizar credenciales entre muchas opciones más.
+  </p>
+
+![Python](https://img.shields.io/badge/-Python-blue)
+
+
+<!-- Badges -->
+<p>
+  <a href="">
+    <img src="https://img.shields.io/github/last-commit/hectorgarciatw/playMigrate" alt="last update" />
+  </a>
+  <a href="https://github.com/hectorgarciatw/playMigrate/issues/">
+    <img src="https://img.shields.io/github/issues/hectorgarciatw/playMigrate" alt="open issues" />
+  </a>
+  <a href="https://github.com/hectorgarciatw/playMigrate/master/LICENSE">
+    <img src="https://img.shields.io/github/license/hectorgarciatw/playMigrate" alt="license" />
+  </a>
+  <a href="https://github.com/hectorgarciatw/playMigrate">
+    <img src="https://img.shields.io/github/languages/top/hectorgarciatw/playMigrate" alt="language" />
+  </a> 
+</p>
+   
+<h4>
+    <a href="https://github.com/hectorgarciatw/playMigrate">View Demo</a>
+  <span> · </span>
+    <a href="https://github.com/hectorgarciatw/playMigrate">Documentation</a>
+  <span> · </span>
+    <a href="https://github.com/hectorgarciatw/playMigrate/issues/">Report Bug</a>
+  <span> · </span>
+    <a href="https://github.com/hectorgarciatw/playMigrate/issues/">Request Feature</a>
+  </h4>
+</div>
+
+<br />
 
 ## 💻 Lenguaje y Módulos de Terceros
 
